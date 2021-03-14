@@ -1,0 +1,14 @@
+﻿@model CarType
+
+<div>
+    <form asp-action="create">
+
+        <div class="form-group">
+            <label asp-for="Name" for="Name"></label>
+            <input type="text" asp-for="Name" class="form-control"/>
+        </div>
+        <div>
+            <input type="submit" value="Submit" class="btn btn-primary"/>
+        </div>
+    </form>
+</div>

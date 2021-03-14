@@ -1,0 +1,48 @@
+﻿@model List<CarType>
+<style>
+    th, td {
+        margin: 10px;
+    }
+</style>
+@if (Model.Count == 0)
+{
+    <div>
+        <p>There is no Car Types in your list</p>
+        @Html.ActionLink("Create Car Type", "Create")
+
+    </div>
+}
+else
+{
+    <div>
+        <div>
+            @Html.ActionLink("Create Car Type", "Create", "CarTypes", null, new { @class = "btn-default" })
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Operations
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var carType in Model)
+                {
+                    <tr>
+                        <td>
+                            @carType.Name
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", "CarTypes", new { Id = carType.Id })
+                            @Html.ActionLink("Delete", "Delete", "CarTypes", new { Id = carType.Id })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

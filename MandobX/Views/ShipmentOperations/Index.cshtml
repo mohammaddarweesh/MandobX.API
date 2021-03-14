@@ -1,0 +1,130 @@
+﻿@model List<ShipmentOperationViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model[0].FromRegion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ToRegion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].CreationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ShipmentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Driver)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Trader)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model[0].RecieverPhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].RecieverName)
+                </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model[0].Packages)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model[0].PackageType)
+                </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model[0].Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ShipmentStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ToTraderCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ToRecieverCode)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FromRegion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ToRegion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShipmentDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Driver)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Trader)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.RecieverPhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RecieverName)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Packages)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.PackageType)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShipmentStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ToTraderCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ToRecieverCode)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                    @switch (item.ShipmentStatus)
+                    {
+                        case "Rejected":
+                            <a asp-action="AcceptShipment" asp-route-id="@item.Id">Accept</a>
+                            break;
+                        case "AdminAccepted":
+                            <a asp-action="RejectShipment" asp-route-id="@item.Id">Reject</a>
+                            break;
+                        case "DriverAccepted":
+                            <a asp-action="RejectShipment" asp-route-id="@item.Id">Reject</a>
+                            break;
+                        case "PendingDriver":
+                            <a asp-action="RejectShipment" asp-route-id="@item.Id">Reject</a>
+                            break;
+                        default:
+                            <a asp-action="AcceptShipment" asp-route-id="@item.Id">Accept</a>
+                            <a asp-action="RejectShipment" asp-route-id="@item.Id">Reject</a>
+                            break;
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

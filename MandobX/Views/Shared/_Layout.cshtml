@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MandobX</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        /* Dropdown Button */
+        .dropbtn {
+            background-color: #fff;
+            color: black;
+            padding: 8px;
+            font-size: 16px;
+            border: none;
+        }
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            /* Links inside the dropdown */
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+                /* Change color of dropdown links on hover */
+                .dropdown-content a:hover {
+                    background-color: #fff;
+                }
+
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Change the background color of the dropdown button when the dropdown content is shown */
+        .dropdown:hover .dropbtn {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MandobX</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item dropdown">
+                            <div class="dropdown">
+                                <button class="dropbtn">Indexes</button>
+                                &#9660;
+                                <div class="dropdown-content">
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Cities" asp-action="Index">Cities</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Regions" asp-action="Index">Regions</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="CarBrands" asp-action="Index">Car Brands</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="CarTypes" asp-action="Index">Car Types</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="TypeOfTradings" asp-action="Index">Type Of Tradings</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="PackageTypes" asp-action="Index">Package Types</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <div class="dropdown">
+                                <button class="dropbtn">Users</button>
+                                &#9660;
+                                <div class="dropdown-content">
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Drivers" asp-action="Index">Drivers</a>
+                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Traders" asp-action="Index">Traders</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a  class="nav-link text-dark" asp-controller="ShipmentOperations" asp-action="index">Shipment Operations</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - MandobX - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,104 @@
+﻿@model MandobX.API.Models.ShipmentOperation
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>ShipmentOperation</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="FromRegionId" class="control-label"></label>
+                <select asp-for="FromRegionId" class="form-control" asp-items="ViewBag.FromRegionId" disabled></select>
+                <span asp-validation-for="FromRegionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToRegionId" class="control-label"></label>
+                <select asp-for="ToRegionId" class="form-control" asp-items="ViewBag.ToRegionId"  disabled></select>
+                <span asp-validation-for="ToRegionId" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="GoogleMapId" class="control-label"></label>
+                <select asp-for="GoogleMapId" class="form-control" asp-items="ViewBag.GoogleMapId"  disabled></select>
+                <span asp-validation-for="GoogleMapId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreationDate" class="control-label"></label>
+                <input asp-for="CreationDate" class="form-control"   disabled/>
+                <span asp-validation-for="CreationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShipmentDate" class="control-label"></label>
+                <input asp-for="ShipmentDate" class="form-control"   disabled/>
+                <span asp-validation-for="ShipmentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DriverId" class="control-label"></label>
+                <input asp-for="DriverId" class="form-control"   disabled/>
+                <span asp-validation-for="DriverId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TraderId" class="control-label"></label>
+                <input asp-for="TraderId" class="form-control"   disabled/>
+                <span asp-validation-for="TraderId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecieverPhoneNumber" class="control-label"></label>
+                <input asp-for="RecieverPhoneNumber" class="form-control"   disabled/>
+                <span asp-validation-for="RecieverPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecieverName" class="control-label"></label>
+                <input asp-for="RecieverName" class="form-control"   disabled/>
+                <span asp-validation-for="RecieverName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Packages" class="control-label"></label>
+                <input asp-for="Packages" class="form-control"  disabled />
+                <span asp-validation-for="Packages" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PackageTypeId" class="control-label"></label>
+                <select asp-for="PackageTypeId" class="form-control" asp-items="ViewBag.PackageTypeId"  disabled></select>
+                <span asp-validation-for="PackageTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShipmentStatus" class="control-label"></label>
+                <select asp-for="ShipmentStatus" class="form-control"  disabled></select>
+                <span asp-validation-for="ShipmentStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToTraderCode" class="control-label"></label>
+                <input asp-for="ToTraderCode" class="form-control"   disabled/>
+                <span asp-validation-for="ToTraderCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToRecieverCode" class="control-label"></label>
+                <input asp-for="ToRecieverCode" class="form-control"   disabled/>
+                <span asp-validation-for="ToRecieverCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

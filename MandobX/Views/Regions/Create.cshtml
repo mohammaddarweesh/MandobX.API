@@ -1,0 +1,19 @@
+﻿@model Region
+@{ 
+    var cities = (List<City>)ViewBag.Cities;
+}
+
+<div>
+    <form asp-action="create">
+        <div class="form-group">
+            <input type="text" asp-for="Name" class="form-control" />
+        </div>
+        <div>
+            <select class="form-control custom-select" asp-for="CityId" asp-items="@(new SelectList(cities,"Id","Name"))"></select>
+        </div>
+        <div>
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </div>
+
+    </form>
+</div>

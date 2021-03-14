@@ -1,0 +1,54 @@
+﻿@model List<Region>
+<style>
+    th,td{
+        margin:10px;
+    }
+</style>
+@if (Model.Count == 0)
+{
+<div>
+    <p>There is no cities in your list</p>
+    @Html.ActionLink("Create Region", "Create")
+
+</div>
+}
+else
+{
+    <div>
+        <div>
+            @Html.ActionLink("Create Region", "Create","Regions",null,new { @class = "btn-default" })
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        City
+                    </th>
+                    <th>
+                        Operations
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var region in Model)
+                {
+                    <tr>
+                        <td>
+                            @region.Name
+                        </td>
+                        <td>
+                            @region.City.Name
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit","Edit","Regions",new { Id = region.Id })
+                            @Html.ActionLink("Delete","Delete","Regions",new { Id = region.Id })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

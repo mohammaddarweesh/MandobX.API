@@ -1,0 +1,44 @@
+﻿@model List<CarBrand>
+
+@if (Model.Count == 0)
+{
+    <div>
+        <p>There is no Car Brands in your list</p>
+        @Html.ActionLink("Create Car Brand", "Create")
+
+    </div>
+}
+else
+{
+    <div>
+        <div>
+            @Html.ActionLink("Create Car Brand", "Create", "CarBrands", null, new { @class = "btn-default" })
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Operations
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var carBrand in Model)
+                {
+                    <tr>
+                        <td>
+                            @carBrand.Name
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@carBrand.Id">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@carBrand.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
