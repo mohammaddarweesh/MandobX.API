@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MandobX.API.ViewModels
 {
+    /// <summary>
+    /// Shipment view model
+    /// </summary>
     public class ShipmentViewModel
     {
         public List<Region> Regions { get; set; }
@@ -81,5 +84,10 @@ namespace MandobX.API.ViewModels
 
         [Required(ErrorMessage = "Distance is Required")]
         public double Distance { get; set; }
+    }
+
+    public class EditShipmentViewModel:CreateShipmentViewModel
+    {
+        public string Id { get; set; }
     }
 }

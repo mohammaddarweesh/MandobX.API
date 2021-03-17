@@ -18,6 +18,7 @@ namespace MandobX.Helpers
                 .ForMember(dest => dest.PackageType, opt => opt.MapFrom(src => src.PackageType.Name))
                 .ForMember(dest => dest.ShipmentDate, opt => opt.MapFrom(src => src.ShipmentDate))
                 .ForMember(dest => dest.Trader, opt => opt.MapFrom(src => src.Trader.User.UserName));
+            CreateMap<CreateVehicleViewModel, Vehicle>();
         }
     }
 }

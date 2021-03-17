@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace MandobX.API.Controllers
 {
+    /// <summary>
+    /// Authentaication controler
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [AllowAnonymous]
@@ -26,6 +29,15 @@ namespace MandobX.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IIdentityService identityService;
         private readonly SignInManager<ApplicationUser> signInManager;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="userManager"></param>
+        /// <param name="roleManager"></param>
+        /// <param name="configuration"></param>
+        /// <param name="identityService"></param>
+        /// <param name="signInManager"></param>
         public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IIdentityService identityService, SignInManager<ApplicationUser> signInManager)
         {
             _configuration = configuration;
@@ -34,7 +46,11 @@ namespace MandobX.API.Controllers
             this.identityService = identityService;
             this.signInManager = signInManager;
         }
-
+        /// <summary>
+        /// login
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
         [Route("login")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
@@ -60,7 +76,7 @@ namespace MandobX.API.Controllers
                         claims: authClaims,
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
-                await signInManager.SignInAsync(user, false);
+                await signInManager.SignInAsync(user, true);
                 var response = new Response
                 {
                     Status = "1",
@@ -78,7 +94,11 @@ namespace MandobX.API.Controllers
             return Unauthorized();
         }
 
-        //logout
+        /// <summary>
+        /// Log out
+        /// </summary>
+        /// <returns></returns>
+
         [Route("logout")]
         [HttpGet]
         public async Task<IActionResult> Logout()
@@ -87,7 +107,11 @@ namespace MandobX.API.Controllers
             return Ok(new Response { Code = "200", Data = null, Msg = "User Loged Out Successfuly", Status = "1" });
 
         }
-
+        /// <summary>
+        /// Register Driver
+        /// </summary>
+        /// <param name="registerModel"></param>
+        /// <returns></returns>
         [Route("registerdriver")]
         [HttpPost]
         public async Task<IActionResult> RegisterDriver(RegisterModel registerModel)
@@ -95,6 +119,23 @@ namespace MandobX.API.Controllers
             try
             {
                 Response response = await identityService.Register(registerModel, UserRoles.Driver);
+                if (response.Status == "1")
+                {
+                    List<Claim> authClaims = new List<Claim> {
+                        new Claim(ClaimTypes.Role, UserRoles.Driver),
+                        new Claim(ClaimTypes.Name, registerModel.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    };
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                    var token = new JwtSecurityToken(
+                            issuer: _configuration["Jwt:Issuer"],
+                            audience: _configuration["Jwt:Audience"],
+                            expires: DateTime.Now.AddHours(3),
+                            claims: authClaims,
+                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                        );
+                    return Ok(new { response = response, token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+                }
                 return Ok(response);
             }
             catch (Exception e)
@@ -122,21 +163,11 @@ namespace MandobX.API.Controllers
 
         }
 
-        //[Route("registeradmin")]
-        //[HttpPost]
-        //public async Task<IActionResult> RegisterAdmin(RegisterModel registerModel)
-        //{
-        //    try
-        //    {
-        //        Response response = await identityService.Register(registerModel, UserRoles.Admin);
-        //        return Ok(response);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Message = e.Message, Status = Result.Error });
-        //    }
-        //}
-
+        /// <summary>
+        /// Register Trader
+        /// </summary>
+        /// <param name="registerModel"></param>
+        /// <returns></returns>
         [Route("registertrader")]
         [HttpPost]
         public async Task<IActionResult> RegisterTrader(RegisterModel registerModel)
@@ -145,6 +176,23 @@ namespace MandobX.API.Controllers
             try
             {
                 Response response = await identityService.Register(registerModel, UserRoles.Trader);
+                if (response.Status == "1")
+                {
+                    List<Claim> authClaims = new List<Claim> {
+                        new Claim(ClaimTypes.Role, UserRoles.Trader),
+                        new Claim(ClaimTypes.Name, registerModel.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    };
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                    var token = new JwtSecurityToken(
+                            issuer: _configuration["Jwt:Issuer"],
+                            audience: _configuration["Jwt:Audience"],
+                            expires: DateTime.Now.AddHours(3),
+                            claims: authClaims,
+                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                        );
+                    return Ok(new { response = response, token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+                }
                 return Ok(response);
             }
             catch (Exception e)

@@ -33,35 +33,45 @@ namespace MandobX.API.Services
                     Email = registerModel.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserStatus = UserStatus.InActive
-
                 };
                 var result = await userManager.CreateAsync(user, registerModel.Password);
-                user = await userManager.FindByNameAsync(registerModel.UserName);
-                switch (role)
+                await dbContext.SaveChangesAsync();
+                if(result.Succeeded)
                 {
-                    case UserRoles.Driver:
-                        var driver = new Driver
-                        {
-                            UserId = user.Id,
-                            Points = 0,
-                        };
-                        dbContext.Drivers.Add(driver);
-                        var x = await dbContext.SaveChangesAsync();
-                        break;
-                    case UserRoles.Trader:
-                        var trader = new Trader
-                        {
-                            UserId = user.Id,
-                            Points = 0,
-                        };
-                        dbContext.Traders.Add(trader);
-                        dbContext.SaveChanges();
-                        break;
-                    default:
-                        break;
+                    user = await userManager.FindByNameAsync(registerModel.UserName);
+                    switch (role)
+                    {
+                        case UserRoles.Driver:
+                            var driver = new Driver
+                            {
+                                UserId = user.Id,
+                                Points = 0,
+                            };
+                            dbContext.Drivers.Add(driver);
+                            var x = await dbContext.SaveChangesAsync();
+                            break;
+                        case UserRoles.Trader:
+                            var trader = new Trader
+                            {
+                                UserId = user.Id,
+                                Points = 0,
+                            };
+                            dbContext.Traders.Add(trader);
+                            dbContext.SaveChanges();
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 if (!result.Succeeded)
-                    return new Response { Status = "0", Msg = "Something went wrong please try again later" };
+                {
+                    string msg = "";
+                    foreach (var error in result.Errors)
+                    {
+                        msg = msg + error.Description + ",";
+                    }
+                    return new Response { Status = "0", Msg = msg };
+                }
                 if (!await roleManager.RoleExistsAsync(role))
                     await roleManager.CreateAsync(new IdentityRole(role));
                 if (await roleManager.RoleExistsAsync(role))

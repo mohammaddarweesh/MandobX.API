@@ -29,6 +29,10 @@ namespace MandobX.API.Controllers
         }
 
         //Get lists of drivers, regions and packagges type to create shipment operation
+        /// <summary>
+        /// all shipment indexes for adding new shipment
+        /// </summary>
+        /// <returns>Response</returns>
         [Route("Init")]
         [HttpGet]
         public async Task<IActionResult> InitShipment()
@@ -42,6 +46,10 @@ namespace MandobX.API.Controllers
             return Ok(new Response { Code = "200", Data = shipmentInitViewModel, Msg = "Task Completed Succesfully", Status = "1" });
         }
         // GET: api/ShipmentOperations
+        /// <summary>
+        /// return all shipment operation related to driver or trader
+        /// </summary>
+        /// <returns></returns>
         [Route("List")]
         [HttpGet]
         public async Task<IActionResult> GetShipmentOperations()
