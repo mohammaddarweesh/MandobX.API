@@ -102,14 +102,22 @@ namespace MandobX.API.Controllers
         [HttpGet]
         public async Task<ActionResult<ShipmentOperation>> GetShipmentOperation(string id)
         {
-            var shipmentOperation = await _context.ShipmentOperations.FindAsync(id);
-
-            if (shipmentOperation == null)
+            try
             {
-                return NotFound();
-            }
+                var shipmentOperation = await _context.ShipmentOperations.FindAsync(id);
 
-            return shipmentOperation;
+                if (shipmentOperation == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new Response { Data = shipmentOperation, Code = "200", Msg = "Success", Status = "1" });
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" });
+            }
         }
 
         // PUT: api/ShipmentOperations/5
@@ -209,31 +217,6 @@ namespace MandobX.API.Controllers
         private bool ShipmentOperationExists(string id)
         {
             return _context.ShipmentOperations.Any(e => e.Id == id);
-        }
-
-        private async Task<string> ApplicationUserId()
-        {
-            var user = await userManager.FindByNameAsync(User?.Identity.Name);
-            if (user != null)
-            {
-                if (User.IsInRole(UserRoles.Admin))
-                    return user.Id;
-                else if (User.IsInRole(UserRoles.Trader))
-                {
-                    var trader = _context.Traders.FirstOrDefault(t => t.UserId == user.Id);
-                    return trader.Id;
-                }
-                else if (User.IsInRole(UserRoles.Driver))
-                {
-                    var driver = _context.Drivers.FirstOrDefault(d => d.UserId == user.Id);
-                    return driver.Id;
-                }
-            }
-            else
-            {
-                return "User Not Found";
-            }
-            return "";
         }
     }
 }
