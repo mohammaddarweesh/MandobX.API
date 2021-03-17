@@ -60,7 +60,7 @@ namespace MandobX.API.Controllers
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        [Route("List/{id}")]
+        [Route("List/{userid}")]
         [HttpGet]
         public async Task<IActionResult> GetShipmentOperations(string userid)
         {

@@ -9,17 +9,32 @@ using System.Threading.Tasks;
 
 namespace MandobX.API.Services
 {
+    /// <summary>
+    /// identity service 
+    /// </summary>
     public class IdentityService : IIdentityService
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly ApplicationDbContext dbContext;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="userManager"></param>
+        /// <param name="roleManager"></param>
+        /// <param name="dbContext"></param>
         public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext dbContext)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
             this.dbContext = dbContext;
         }
+        /// <summary>
+        /// Register for trader and driver
+        /// </summary>
+        /// <param name="registerModel"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public async Task<Response> Register(RegisterModel registerModel, string role)
         {
             try
@@ -33,7 +48,8 @@ namespace MandobX.API.Services
                     Email = registerModel.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserStatus = UserStatus.InActive,
-                    UserType = role
+                    UserType = role,
+                    PhoneNumber = registerModel.PhoneNumber
                 };
                 var result = await userManager.CreateAsync(user, registerModel.Password);
                 await dbContext.SaveChangesAsync();

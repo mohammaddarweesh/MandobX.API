@@ -59,8 +59,15 @@ namespace MandobX.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
+            if (string.IsNullOrEmpty(loginModel.PhoneNumber) || string.IsNullOrEmpty(loginModel.UserName))
+            {
+                return Ok(new Response { Code = "500", Data = null, Msg = "Please fill one of the following: user name or phone number", Status = "0" });
+            }
             var user = await userManager.FindByNameAsync(loginModel.UserName);
-            
+            if (user == null && !string.IsNullOrEmpty( loginModel.PhoneNumber))
+            {
+                user = _context.ApplicationUsers.FirstOrDefault(a => a.PhoneNumber == loginModel.PhoneNumber);
+            }
             if (user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
