@@ -10,9 +10,13 @@ using MandobX.API.ViewModels;
 using MandobX.API.Authentication;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MandobX.API.Controllers
 {
+    /// <summary>
+    /// shipment controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ShipOpsController : ControllerBase
@@ -20,7 +24,12 @@ namespace MandobX.API.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> userManager;
-
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <param name="context"></param>
+        /// <param name="userManager"></param>
         public ShipOpsController(IMapper mapper, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -49,50 +58,46 @@ namespace MandobX.API.Controllers
         /// <summary>
         /// return all shipment operation related to driver or trader
         /// </summary>
+        /// <param name="userid"></param>
         /// <returns></returns>
-        [Route("List")]
+        [Route("List/{id}")]
         [HttpGet]
-        public async Task<IActionResult> GetShipmentOperations()
+        public async Task<IActionResult> GetShipmentOperations(string userid)
         {
             var shipments = new List<ShipmentOperation>();
             var shipmentViewModels = new List<ShipmentListViewModel>();
-            string userId = ApplicationUserId().ToString();
-            if (User.Claims.Any(d => d.Value == "Admin"))
+            var user = await userManager.FindByIdAsync(userid);
+            if (user.UserType == UserRoles.Driver)
             {
+                var driver = _context.Drivers.FirstOrDefault(d => d.UserId == userid);
                 shipments = await _context.ShipmentOperations.Include(s => s.FromRegion)
                                                              .Include(s => s.Driver.User)
                                                              .Include(s => s.PackageType)
-                                                             .Include(s => s.ToRegion).ToListAsync();
+                                                             .Include(s => s.ToRegion)
+                                                             .Where(t => t.DriverId == driver.Id).ToListAsync();
                 shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
                 return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
             }
-            else
+            else if (user.UserType == UserRoles.Trader)
             {
-                if (User.IsInRole("Driver"))
-                {
-                    shipments = await _context.ShipmentOperations.Include(s => s.FromRegion)
-                                                                 .Include(s => s.Driver.User)
-                                                                 .Include(s => s.PackageType)
-                                                                 .Include(s => s.ToRegion)
-                                                                 .Where(t => t.DriverId == userId).ToListAsync();
-                    shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
-                    return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
-                }
-                else if (User.IsInRole("Trader"))
-                {
-                    shipments = await _context.ShipmentOperations.Include(s => s.FromRegion)
-                                                                 .Include(s => s.Driver.User)
-                                                                 .Include(s => s.PackageType)
-                                                                 .Include(s => s.ToRegion)
-                                                                 .Where(t => t.DriverId == userId).ToListAsync();
-                    shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
-                    return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
-                }
-                return NotFound();
+                var trader = _context.Traders.FirstOrDefault(d => d.UserId == userid);
+                shipments = await _context.ShipmentOperations.Include(s => s.FromRegion)
+                                                             .Include(s => s.Driver.User)
+                                                             .Include(s => s.PackageType)
+                                                             .Include(s => s.ToRegion)
+                                                             .Where(t => t.TraderId == trader.Id).ToListAsync();
+                shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
+                return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
             }
+            return NotFound();
         }
 
         // GET: api/ShipmentOperations/5
+        /// <summary>
+        /// details of specific shipment operation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Route("Details/{id}")]
         [HttpGet]
         public async Task<ActionResult<ShipmentOperation>> GetShipmentOperation(string id)
@@ -109,9 +114,16 @@ namespace MandobX.API.Controllers
 
         // PUT: api/ShipmentOperations/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// update shipment operation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="editShipmentViewModel"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutShipmentOperation(string id, ShipmentOperation shipmentOperation)
+        public async Task<IActionResult> PutShipmentOperation(string id, EditShipmentViewModel editShipmentViewModel)
         {
+            ShipmentOperation shipmentOperation = _mapper.Map<ShipmentOperation>(editShipmentViewModel);
             if (id != shipmentOperation.Id)
             {
                 return BadRequest();
@@ -131,15 +143,20 @@ namespace MandobX.API.Controllers
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new Response { Code = "500", Data = null, Msg = "something went wrong", Status = "0" });
                 }
             }
 
-            return NoContent();
+            return Ok(new Response { Code = "200", Data = null, Msg = "Shipment updated successfully", Status = "1" });
         }
 
         // POST: api/ShipmentOperations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// add shpment operation
+        /// </summary>
+        /// <param name="shipmentOperationViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> PostShipmentOperation(CreateShipmentViewModel shipmentOperationViewModel)
         {
@@ -169,6 +186,11 @@ namespace MandobX.API.Controllers
         }
 
         // DELETE: api/ShipmentOperations/5
+        /// <summary>
+        /// delete shipment operation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShipmentOperation(string id)
         {

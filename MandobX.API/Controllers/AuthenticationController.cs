@@ -1,4 +1,5 @@
 ﻿using MandobX.API.Authentication;
+using MandobX.API.Data;
 using MandobX.API.Services.IService;
 using MandobX.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +31,7 @@ namespace MandobX.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IIdentityService identityService;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly ApplicationDbContext _context;
 
         /// <summary>
         /// constructor
@@ -38,13 +41,14 @@ namespace MandobX.API.Controllers
         /// <param name="configuration"></param>
         /// <param name="identityService"></param>
         /// <param name="signInManager"></param>
-        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IIdentityService identityService, SignInManager<ApplicationUser> signInManager)
+        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IIdentityService identityService, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
         {
             _configuration = configuration;
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.identityService = identityService;
             this.signInManager = signInManager;
+            _context = context;
         }
         /// <summary>
         /// login
@@ -56,6 +60,7 @@ namespace MandobX.API.Controllers
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
             var user = await userManager.FindByNameAsync(loginModel.UserName);
+            
             if (user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
@@ -82,13 +87,14 @@ namespace MandobX.API.Controllers
                     Status = "1",
                     Msg = "User Logged in Successfuly"
                 };
-
+                
                 return Ok(
                         new
                         {
                             response = response,
                             token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo
+                            expiration = token.ValidTo,
+                            userId = user.Id
                         });
             }
             return Unauthorized();

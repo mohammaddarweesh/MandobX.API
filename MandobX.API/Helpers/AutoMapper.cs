@@ -4,8 +4,14 @@ using MandobX.API.ViewModels;
 
 namespace MandobX.Helpers
 {
+    /// <summary>
+    /// auto mapper helper
+    /// </summary>
     public class AutoMapper:Profile
     {
+        /// <summary>
+        /// constructor
+        /// </summary>
         public AutoMapper()
         {
             CreateMap<CreateShipmentViewModel, GoogleMap>();
@@ -19,6 +25,7 @@ namespace MandobX.Helpers
                 .ForMember(dest => dest.ShipmentDate, opt => opt.MapFrom(src => src.ShipmentDate))
                 .ForMember(dest => dest.Trader, opt => opt.MapFrom(src => src.Trader.User.UserName));
             CreateMap<CreateVehicleViewModel, Vehicle>();
+            CreateMap<EditShipmentViewModel, ShipmentOperation>();
         }
     }
 }

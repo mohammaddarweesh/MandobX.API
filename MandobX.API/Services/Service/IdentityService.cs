@@ -32,7 +32,8 @@ namespace MandobX.API.Services
                     UserName = registerModel.UserName,
                     Email = registerModel.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    UserStatus = UserStatus.InActive
+                    UserStatus = UserStatus.InActive,
+                    UserType = role
                 };
                 var result = await userManager.CreateAsync(user, registerModel.Password);
                 await dbContext.SaveChangesAsync();
