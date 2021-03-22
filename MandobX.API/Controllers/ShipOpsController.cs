@@ -10,7 +10,6 @@ using MandobX.API.ViewModels;
 using MandobX.API.Authentication;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MandobX.API.Controllers
 {
@@ -48,7 +47,7 @@ namespace MandobX.API.Controllers
         {
             ShipmentViewModel shipmentInitViewModel = new ShipmentViewModel
             {
-                Drivers = await _context.Drivers.Include(d => d.User).Include(d => d.Vehicle).ToListAsync(),
+                Drivers = await _context.Drivers.Where(d=>d.User.UserStatus == UserStatus.Active).Include(d => d.User).Include(d => d.Vehicle).ToListAsync(),
                 PackageTypes = await _context.PackageTypes.ToListAsync(),
                 Regions = await _context.Regions.ToListAsync()
             };

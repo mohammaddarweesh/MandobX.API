@@ -47,7 +47,7 @@ namespace MandobX.API.Services
                     UserName = registerModel.UserName,
                     Email = registerModel.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    UserStatus = UserStatus.InActive,
+                    UserStatus = UserStatus.Active,
                     UserType = role,
                     PhoneNumber = registerModel.PhoneNumber
                 };
