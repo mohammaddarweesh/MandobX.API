@@ -3,6 +3,7 @@ using MandobX.API.Data;
 using MandobX.API.Services.IService;
 using MandobX.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -32,6 +34,7 @@ namespace MandobX.API.Controllers
         private readonly IIdentityService identityService;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
         /// <summary>
         /// constructor
@@ -41,7 +44,7 @@ namespace MandobX.API.Controllers
         /// <param name="configuration"></param>
         /// <param name="identityService"></param>
         /// <param name="signInManager"></param>
-        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IIdentityService identityService, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
+        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IIdentityService identityService, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _configuration = configuration;
             this.userManager = userManager;
@@ -49,6 +52,7 @@ namespace MandobX.API.Controllers
             this.identityService = identityService;
             this.signInManager = signInManager;
             _context = context;
+            _environment = environment;
         }
         /// <summary>
         /// login
@@ -59,12 +63,12 @@ namespace MandobX.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
-            if (string.IsNullOrEmpty(loginModel.PhoneNumber) || string.IsNullOrEmpty(loginModel.UserName))
+            if (string.IsNullOrEmpty(loginModel.PhoneNumber) && string.IsNullOrEmpty(loginModel.UserName))
             {
                 return Ok(new Response { Code = "500", Data = null, Msg = "Please fill one of the following: user name or phone number", Status = "0" });
             }
             var user = await userManager.FindByNameAsync(loginModel.UserName);
-            if (user == null && !string.IsNullOrEmpty( loginModel.PhoneNumber))
+            if (user == null && !string.IsNullOrEmpty(loginModel.PhoneNumber))
             {
                 user = _context.ApplicationUsers.FirstOrDefault(a => a.PhoneNumber == loginModel.PhoneNumber);
             }
@@ -94,7 +98,7 @@ namespace MandobX.API.Controllers
                     Status = "1",
                     Msg = "User Logged in Successfuly"
                 };
-                
+
                 return Ok(
                         new
                         {
@@ -212,6 +216,40 @@ namespace MandobX.API.Controllers
             {
 
                 return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = e.Message, Status = "0" });
+            }
+        }
+        /// <summary>
+        /// upload images to driver or trader
+        /// </summary>
+        /// <param name="formFiles"></param>
+        /// <returns></returns>
+        [Route("uploadimages")]
+        [HttpPost]
+        public async Task<IActionResult> UploadImages(IFormFile[] formFiles, string userId, string fileType)
+        {
+            try
+            {
+                if (formFiles == null)
+                {
+                    return Ok(new Response { Code = "200", Data = null, Msg = "Please upload one file at least", Status = "0" });
+                }
+                foreach (IFormFile file in formFiles)
+                {
+                    if (!Directory.Exists(_environment.ContentRootPath + "\\Uploads"))
+                    {
+                        Directory.CreateDirectory(_environment.ContentRootPath + "\\Uploads");
+                    }
+                    using (FileStream filestream = System.IO.File.Create(_environment.ContentRootPath + "\\uploads\\" + file.FileName))
+                    {
+                        file.CopyTo(filestream);
+                        filestream.Flush();
+                    }
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" });
             }
         }
     }
