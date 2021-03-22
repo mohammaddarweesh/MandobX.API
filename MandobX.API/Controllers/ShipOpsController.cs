@@ -10,12 +10,14 @@ using MandobX.API.ViewModels;
 using MandobX.API.Authentication;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MandobX.API.Controllers
 {
     /// <summary>
     /// shipment controller
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ShipOpsController : ControllerBase
