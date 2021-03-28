@@ -1,0 +1,596 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MandobX.API</name>
+    </assembly>
+    <members>
+        <member name="T:MandobX.API.Controllers.AuthenticationController">
+            <summary>
+            Authentaication controler
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Controllers.AuthenticationController.#ctor(Microsoft.AspNetCore.Identity.UserManager{MandobX.API.Authentication.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{Microsoft.AspNetCore.Identity.IdentityRole},Microsoft.Extensions.Configuration.IConfiguration,MandobX.API.Services.IService.IIdentityService,Microsoft.AspNetCore.Identity.SignInManager{MandobX.API.Authentication.ApplicationUser},MandobX.API.Data.ApplicationDbContext,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            constructor
+            </summary>
+            <param name="userManager"></param>
+            <param name="roleManager"></param>
+            <param name="configuration"></param>
+            <param name="identityService"></param>
+            <param name="signInManager"></param>
+        </member>
+        <member name="M:MandobX.API.Controllers.AuthenticationController.Login(MandobX.API.ViewModels.LoginModel)">
+            <summary>
+            login
+            </summary>
+            <param name="loginModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.AuthenticationController.Logout">
+            <summary>
+            Log out
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.AuthenticationController.RegisterDriver(MandobX.API.ViewModels.RegisterModel)">
+            <summary>
+            Register Driver
+            </summary>
+            <param name="registerModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.AuthenticationController.RegisterTrader(MandobX.API.ViewModels.RegisterModel)">
+            <summary>
+            Register Trader
+            </summary>
+            <param name="registerModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.AuthenticationController.UploadImages(Microsoft.AspNetCore.Http.IFormFile[],System.String,System.String)">
+            <summary>
+            upload images to driver or trader
+            </summary>
+            <param name="formFiles"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MandobX.API.Controllers.ProfileController">
+            <summary>
+            Trader and Driver Profile Controller 
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Controllers.ProfileController.#ctor(MandobX.API.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{MandobX.API.Authentication.ApplicationUser},AutoMapper.IMapper)">
+            <summary>
+            constructor
+            </summary>
+            <param name="context"></param>
+            <param name="userManager"></param>
+            <param name="mapper"></param>
+        </member>
+        <member name="M:MandobX.API.Controllers.ProfileController.GetDriverOrTrader(System.String)">
+            <summary>
+            get driver or trader details to update
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ProfileController.UpdateUser(MandobX.API.ViewModels.EditProfileViewModel)">
+            <summary>
+            Update user details driver or trader
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MandobX.API.Controllers.ShipOpsController">
+            <summary>
+            shipment controller
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.#ctor(AutoMapper.IMapper,MandobX.API.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{MandobX.API.Authentication.ApplicationUser})">
+            <summary>
+            constructor
+            </summary>
+            <param name="mapper"></param>
+            <param name="context"></param>
+            <param name="userManager"></param>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.InitShipment">
+            <summary>
+            all shipment indexes for adding new shipment
+            </summary>
+            <returns>Response</returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.GetShipmentOperations(System.String)">
+            <summary>
+            return all shipment operation related to driver or trader
+            </summary>
+            <param name="userid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.GetShipmentOperation(System.String)">
+            <summary>
+            details of specific shipment operation
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.PutShipmentOperation(System.String,MandobX.API.ViewModels.EditShipmentViewModel)">
+            <summary>
+            update shipment operation
+            </summary>
+            <param name="id"></param>
+            <param name="editShipmentViewModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.PostShipmentOperation(MandobX.API.ViewModels.CreateShipmentViewModel)">
+            <summary>
+            add shpment operation
+            </summary>
+            <param name="shipmentOperationViewModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.DeleteShipmentOperation(System.String)">
+            <summary>
+            delete shipment operation
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MandobX.API.Controllers.VehiclesController">
+            <summary>
+            Vehicles Controller
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Controllers.VehiclesController.#ctor(MandobX.API.Data.ApplicationDbContext,AutoMapper.IMapper)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context"></param>
+            <param name="mapper"></param>
+        </member>
+        <member name="M:MandobX.API.Controllers.VehiclesController.GetVehicle(System.String)">
+            <summary>
+            Get vehicles using Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.VehiclesController.PutVehicle(System.String,MandobX.API.Models.Vehicle)">
+            <summary>
+            Update vehicle
+            </summary>
+            <param name="id"></param>
+            <param name="vehicle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.VehiclesController.PostVehicle(System.String,MandobX.API.ViewModels.CreateVehicleViewModel)">
+            <summary>
+            Add vehicle
+            </summary>
+            <param name="vehicle"></param>
+            <param name="userID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.VehiclesController.DeleteVehicle(System.String)">
+            <summary>
+            Delete vehicle
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MandobX.API.Authentication.Driver">
+            <summary>
+            Driver Class
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.Id">
+            <summary>
+            Driver Id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.Points">
+            <summary>
+            Drivers Points
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.VehicleId">
+            <summary>
+            driver vehicle
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.Vehicle">
+            <summary>
+            driver vehicle
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.ShipmentOperations">
+            <summary>
+            driver shipment operations
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.UserId">
+            <summary>
+            driver user
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.User">
+            <summary>
+            driver user
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.Longitude">
+            <summary>
+            longitude of the Driver place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.Latitude">
+            <summary>
+            Latitude of the Driver place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.FirstName">
+            <summary>
+            Driver first name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Driver.LastName">
+            <summary>
+            Driver last name
+            </summary>
+        </member>
+        <member name="T:MandobX.API.Authentication.Response">
+            <summary>
+            Response
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Response.Status">
+            <summary>
+            status
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Response.Msg">
+            <summary>
+            Message
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Response.Data">
+            <summary>
+            Data from the call
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Response.Code">
+            <summary>
+            Response Code
+            </summary>
+        </member>
+        <member name="T:MandobX.API.Authentication.Trader">
+            <summary>
+            trader class
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.Id">
+            <summary>
+            Trader Id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.Points">
+            <summary>
+            Trader Points
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.ShipmentOperations">
+            <summary>
+            trader's shipment operation
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.TypeOftrading">
+            <summary>
+            type of trading
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.TypeOftradingId">
+            <summary>
+            type of trading
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.UserId">
+            <summary>
+            user id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.User">
+            <summary>
+            user
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.FirstName">
+            <summary>
+            Driver first name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Authentication.Trader.LastName">
+            <summary>
+            Driver last name
+            </summary>
+        </member>
+        <member name="T:MandobX.API.Models.GoogleMap">
+            <summary>
+            google map coordinates
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.GoogleMap.Id">
+            <summary>
+            Id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.GoogleMap.Time">
+            <summary>
+            time between the shipment place and the reciever
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.GoogleMap.Latitude">
+            <summary>
+            Latitude of the shipment operation place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.GoogleMap.Longitude">
+            <summary>
+            longitude of the shipment operation place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.GoogleMap.Distance">
+            <summary>
+            distance between the sender and the reciever
+            </summary>
+        </member>
+        <member name="T:MandobX.API.Models.UploadedFile">
+            <summary>
+            uploaded files
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.UploadedFile.Id">
+            <summary>
+            id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.UploadedFile.FileType">
+            <summary>
+            file type(personal photo-car-liecence)
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.UploadedFile.User">
+            <summary>
+            trader or driver
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.UploadedFile.UserId">
+            <summary>
+            user id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.Models.UploadedFile.FilePath">
+            <summary>
+            will be decided if base 64 or file path
+            </summary>
+        </member>
+        <member name="T:MandobX.API.Models.Vehicle">
+            <Summary>
+             Gets the answer
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.Id">
+            <Summary>
+            Id of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.Number">
+            <Summary>
+             Number of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.Volume">
+            <Summary>
+             Volume of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.CarType">
+            <Summary>
+             CarType of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.CarBrand">
+            <Summary>
+             CarBrand of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.CarTypeId">
+            <Summary>
+             CarTypeId of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.CarBrandId">
+            <Summary>
+             CarBrandId of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.Models.Vehicle.UploadedFiles">
+            <Summary>
+             UploadedFiles of the vehicle
+            </Summary>
+        </member>
+        <member name="T:MandobX.API.Services.IdentityService">
+            <summary>
+            identity service 
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Services.IdentityService.#ctor(Microsoft.AspNetCore.Identity.UserManager{MandobX.API.Authentication.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{Microsoft.AspNetCore.Identity.IdentityRole},MandobX.API.Data.ApplicationDbContext)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="userManager"></param>
+            <param name="roleManager"></param>
+            <param name="dbContext"></param>
+        </member>
+        <member name="M:MandobX.API.Services.IdentityService.Register(MandobX.API.ViewModels.RegisterModel,System.String)">
+            <summary>
+            Register for trader and driver
+            </summary>
+            <param name="registerModel"></param>
+            <param name="role"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MandobX.API.Startup">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="P:MandobX.API.Startup.Configuration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:MandobX.API.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
+        <member name="T:MandobX.API.ViewModels.LoginModel">
+            <summary>
+            login model
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.LoginModel.UserName">
+            <summary>
+            user name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.LoginModel.Password">
+            <summary>
+            password
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.LoginModel.PhoneNumber">
+            <summary>
+            phone number
+            </summary>
+        </member>
+        <member name="T:MandobX.API.ViewModels.EditProfileViewModel">
+            <summary>
+            Edit profile View Model
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.Id">
+            <summary>
+            trader or driver id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.Longitude">
+            <summary>
+            longitude of the Driver place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.Latitude">
+            <summary>
+            Latitude of the Driver place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.FirstName">
+            <summary>
+            Driver first name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.LastName">
+            <summary>
+            Driver last name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.PhoneNumber">
+            <summary>
+            Phone Number
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.EmailAddress">
+            <summary>
+            Email Address
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.RegisterModel.UserName">
+            <summary>
+            user name 
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.RegisterModel.Password">
+            <summary>
+            password 
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.RegisterModel.ConfirmPassword">
+            <summary>
+            confirm password 
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.RegisterModel.Email">
+            <summary>
+            email address
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.RegisterModel.PhoneNumber">
+            <summary>
+            phone number
+            </summary>
+        </member>
+        <member name="T:MandobX.API.ViewModels.ShipmentViewModel">
+            <summary>
+            Shipment view model
+            </summary>
+        </member>
+        <member name="T:MandobX.API.ViewModels.CreateVehicleViewModel">
+            <summary>
+            Create Vehicle view model
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.CreateVehicleViewModel.Number">
+            <Summary>
+             Number of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.CreateVehicleViewModel.Volume">
+            <Summary>
+             Volume of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.CreateVehicleViewModel.CarTypeId">
+            <Summary>
+             CarTypeId of the vehicle
+            </Summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.CreateVehicleViewModel.CarBrandId">
+            <Summary>
+             CarBrandId of the vehicle
+            </Summary>
+        </member>
+        <member name="T:MandobX.Helpers.AutoMapper">
+            <summary>
+            auto mapper helper
+            </summary>
+        </member>
+        <member name="M:MandobX.Helpers.AutoMapper.#ctor">
+            <summary>
+            constructor
+            </summary>
+        </member>
+    </members>
+</doc>
