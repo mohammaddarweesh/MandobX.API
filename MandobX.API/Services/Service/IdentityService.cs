@@ -41,7 +41,7 @@ namespace MandobX.API.Services
             {
                 var userExist = await userManager.FindByNameAsync(registerModel.UserName);
                 if (userExist != null)
-                    return new Response { Status = "0", Msg = "User already Exist" };
+                    return new Response { Status = "0", Msg = "User already Exist with the name " + registerModel.UserName };
                 ApplicationUser user = new ApplicationUser
                 {
                     UserName = registerModel.UserName,
@@ -93,7 +93,7 @@ namespace MandobX.API.Services
                     await roleManager.CreateAsync(new IdentityRole(role));
                 if (await roleManager.RoleExistsAsync(role))
                     await userManager.AddToRoleAsync(user, role);
-                return new Response { Status = "1", Msg = string.Format("{0} was Created Successfully", role) };
+                return new Response { Data = new { userId = user.Id}, Status = "1", Msg = string.Format("{0} was Created Successfully", role) };
             }
 
             catch (Exception e)

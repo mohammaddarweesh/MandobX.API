@@ -245,7 +245,7 @@ namespace MandobX.API.Controllers
                         filestream.Flush();
                     }
                 }
-                return Ok();
+                return Ok(new { t = _environment.ContentRootPath, f = _environment.WebRootPath });
             }
             catch (Exception e)
             {

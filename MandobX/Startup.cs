@@ -35,6 +35,7 @@ namespace MandobX
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
             services.AddControllersWithViews();
         }
 
@@ -52,6 +53,7 @@ namespace MandobX
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
