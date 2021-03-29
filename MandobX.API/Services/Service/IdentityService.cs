@@ -93,7 +93,7 @@ namespace MandobX.API.Services
                     await roleManager.CreateAsync(new IdentityRole(role));
                 if (await roleManager.RoleExistsAsync(role))
                     await userManager.AddToRoleAsync(user, role);
-                return new Response { Data = new { userId = user.Id}, Status = "1", Msg = string.Format("{0} was Created Successfully", role) };
+                return new Response { Data = new { userId = user.Id, userType = user.UserType}, Status = "1", Msg = string.Format("{0} was Created Successfully", role) };
             }
 
             catch (Exception e)

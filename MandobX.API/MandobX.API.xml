@@ -140,12 +140,13 @@
             Vehicles Controller
             </summary>
         </member>
-        <member name="M:MandobX.API.Controllers.VehiclesController.#ctor(MandobX.API.Data.ApplicationDbContext,AutoMapper.IMapper)">
+        <member name="M:MandobX.API.Controllers.VehiclesController.#ctor(MandobX.API.Data.ApplicationDbContext,AutoMapper.IMapper,Microsoft.AspNetCore.Identity.UserManager{MandobX.API.Authentication.ApplicationUser})">
             <summary>
             Constructor
             </summary>
             <param name="context"></param>
             <param name="mapper"></param>
+            <param name="userManager"></param>
         </member>
         <member name="M:MandobX.API.Controllers.VehiclesController.GetVehicle(System.String)">
             <summary>
@@ -175,6 +176,12 @@
             Delete vehicle
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.VehiclesController.Init">
+            <summary>
+            init create for vehicle (get car types and car brands)
+            </summary>
             <returns></returns>
         </member>
         <member name="T:MandobX.API.Authentication.Driver">

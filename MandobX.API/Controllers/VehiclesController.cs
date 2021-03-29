@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MandobX.API.Data;
@@ -10,6 +8,7 @@ using MandobX.API.Models;
 using MandobX.API.Authentication;
 using MandobX.API.ViewModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace MandobX.API.Controllers
 {
@@ -22,23 +21,21 @@ namespace MandobX.API.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
         /// <param name="mapper"></param>
-        public VehiclesController(ApplicationDbContext context, IMapper mapper)
+        /// <param name="userManager"></param>
+        public VehiclesController(ApplicationDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
-        // GET: api/Vehicles
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Vehicle>>> GetVehicles()
-        //{
-        //    return await _context.Vehicles.ToListAsync();
-        //}
         /// <summary>
         /// Get vehicles using Id
         /// </summary>
@@ -108,13 +105,18 @@ namespace MandobX.API.Controllers
         {
             try
             {
-                var storedVehicle = _mapper.Map<Vehicle>(vehicle);
-                _context.Vehicles.Add(storedVehicle);
-                Driver driver = _context.Drivers.Find(userID);
-                driver.VehicleId = storedVehicle.Id;
-                await _context.SaveChangesAsync();
-                return Ok(new Response { Msg = "Vehicle was created successfuly", Status = "1", Data = null, Code = "200" });
-
+                var user = await _userManager.FindByIdAsync(userID);
+                if (user!=null)
+                {
+                    var storedVehicle = _mapper.Map<Vehicle>(vehicle);
+                    _context.Vehicles.Add(storedVehicle);
+                    Driver driver = _context.Drivers.FirstOrDefault(d => d.UserId == userID);
+                    driver.VehicleId = storedVehicle.Id;
+                    _context.Drivers.Update(driver);
+                    await _context.SaveChangesAsync();
+                    return Ok(new Response { Msg = "Vehicle was created successfuly", Status = "1", Data = null, Code = "200" });
+                }
+                return NotFound(new Response { Msg = "user not found", Code = "500", Data = null, Status = "0" });
             }
             catch (Exception e)
             {
@@ -151,6 +153,18 @@ namespace MandobX.API.Controllers
             _context.Vehicles.Remove(vehicle);
             await _context.SaveChangesAsync();
             return Ok(new Response { Code = "200", Data = null, Status = "1", Msg = "Vehicle was deleted successfuly" });
+        }
+
+        /// <summary>
+        /// init create for vehicle (get car types and car brands)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Init()
+        {
+            var carbrands = await _context.CarBrands.ToListAsync();
+            var cartypes = await _context.CarTypes.ToListAsync();
+            return Ok(new Response { Code = "200", Data = new { cartypes = cartypes, carbrands = carbrands }, Msg = "", Status = "1" });
         }
 
         private bool VehicleExists(string id)

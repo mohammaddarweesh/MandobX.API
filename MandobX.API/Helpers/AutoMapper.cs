@@ -30,8 +30,7 @@ namespace MandobX.Helpers
             CreateMap<Driver, EditProfileViewModel>()
                 .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId))
-                ;
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId));
         }
     }
 }

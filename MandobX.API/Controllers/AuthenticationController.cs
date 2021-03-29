@@ -96,7 +96,12 @@ namespace MandobX.API.Controllers
                 var response = new Response
                 {
                     Status = "1",
-                    Msg = "User Logged in Successfuly"
+                    Msg = "User Logged in Successfuly",
+                    Data = new
+                    {
+                        userId = user.Id,
+                        userType = user.UserType
+                    }
                 };
 
                 return Ok(
@@ -105,7 +110,6 @@ namespace MandobX.API.Controllers
                             response = response,
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
-                            userId = user.Id
                         });
             }
             return Unauthorized();

@@ -17,7 +17,7 @@ namespace MandobX.API.Controllers
     /// <summary>
     /// shipment controller
     /// </summary>
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ShipOpsController : ControllerBase
@@ -176,6 +176,10 @@ namespace MandobX.API.Controllers
                     GoogleMap googleMap = _mapper.Map<GoogleMap>(shipmentOperationViewModel);
                     _context.GoogleMaps.Add(googleMap);
                     await _context.SaveChangesAsync();
+                    var trader = await _context.Traders.FirstOrDefaultAsync(t => t.UserId == shipmentOperationViewModel.TraderId);
+                    var driver = await _context.Drivers.FirstOrDefaultAsync(d => d.UserId == shipmentOperationViewModel.DriverId);
+                    shipmentOperationViewModel.TraderId = trader.Id;
+                    shipmentOperationViewModel.DriverId = driver.Id;
                     ShipmentOperation shipmentOperation = _mapper.Map<ShipmentOperation>(shipmentOperationViewModel);
                     shipmentOperation.GoogleMapId = googleMap.Id;
                     shipmentOperation.CreationDate = DateTime.Now.ToString();
