@@ -47,13 +47,21 @@ namespace MandobX.API.Controllers
         [HttpGet]
         public async Task<IActionResult> InitShipment()
         {
-            ShipmentViewModel shipmentInitViewModel = new ShipmentViewModel
+            try
             {
-                Drivers = await _context.Drivers.Where(d=>d.User.UserStatus == UserStatus.Active).Include(d => d.User).Include(d => d.Vehicle).ToListAsync(),
-                PackageTypes = await _context.PackageTypes.ToListAsync(),
-                Regions = await _context.Regions.ToListAsync()
-            };
-            return Ok(new Response { Code = "200", Data = shipmentInitViewModel, Msg = "Task Completed Succesfully", Status = "1" });
+                ShipmentViewModel shipmentInitViewModel = new ShipmentViewModel
+                {
+                    Drivers = await _context.Drivers.Where(d => d.User.UserStatus == UserStatus.Active).Include(d => d.User).Include(d => d.Vehicle).ToListAsync(),
+                    PackageTypes = await _context.PackageTypes.ToListAsync(),
+                    Regions = await _context.Regions.ToListAsync()
+                };
+                return Ok(new Response { Code = "200", Data = shipmentInitViewModel, Msg = "Task Completed Succesfully", Status = "1" });
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" });
+            }
         }
         // GET: api/ShipmentOperations
         /// <summary>
