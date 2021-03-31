@@ -228,6 +228,12 @@ namespace MandobX.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shipmentId"></param>
+        /// <param name="newStatus"></param>
+        /// <returns></returns>
         [HttpPost("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus(string shipmentId, int newStatus)
         {

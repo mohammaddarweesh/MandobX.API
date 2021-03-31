@@ -125,6 +125,7 @@ namespace MandobX.Controllers
                 {
                     ShipmentOperation shipment = _context.ShipmentOperations.Find(id);
                     shipment.Price = shipmentOperation.Price;
+                    shipment.ShipmentStatus = ShipmentStatus.AdminAccepted;
                     _context.Update(shipment);
                     await _context.SaveChangesAsync();
                 }
