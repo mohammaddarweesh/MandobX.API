@@ -1,5 +1,4 @@
-﻿
-namespace MandobX.API.Models
+﻿namespace MandobX.API.Models
 {
     public enum ShipmentStatus
     {
@@ -9,7 +8,8 @@ namespace MandobX.API.Models
         DriverAccepted = 3,
         OnTheWay = 4,
         Shipped = 5,
-        Rejected = 6
+        AdminRejected = 6,
+        DriverRejected = 7
     }
     public enum FileType
     {

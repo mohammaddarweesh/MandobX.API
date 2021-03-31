@@ -15,7 +15,10 @@ namespace MandobX.Helpers
                 .ForMember(dest=>dest.ToRegion, opt=>opt.MapFrom(src=>src.ToRegion.Name))
                 .ForMember(dest=>dest.PackageType, opt=>opt.MapFrom(src=>src.PackageType.Name))
                 .ForMember(dest=>dest.ShipmentDate, opt=>opt.MapFrom(src => src.ShipmentDate))
-                .ForMember(dest=>dest.Trader, opt=>opt.MapFrom(src=>src.Trader.User.UserName));
+                .ForMember(dest=>dest.Trader, opt=>opt.MapFrom(src=>src.Trader.User.UserName))
+                .ForMember(dest=>dest.Latitude, opt=>opt.MapFrom(src=>src.GoogleMap.Latitude))
+                .ForMember(dest=>dest.Longitude, opt=>opt.MapFrom(src=>src.GoogleMap.Longitude))
+                ;
         }
     }
 }

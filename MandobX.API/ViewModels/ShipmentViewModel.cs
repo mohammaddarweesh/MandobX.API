@@ -12,7 +12,7 @@ namespace MandobX.API.ViewModels
     {
         public List<Region> Regions { get; set; }
         public List<PackageType> PackageTypes { get; set; }
-        public List<Driver> Drivers { get; set; }
+        public List<DriverCreateShipmentViewModel> Drivers { get; set; }
     }
     public class ShipmentListViewModel
     {

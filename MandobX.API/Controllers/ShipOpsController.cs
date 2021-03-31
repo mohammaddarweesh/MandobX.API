@@ -49,9 +49,10 @@ namespace MandobX.API.Controllers
         {
             try
             {
+                var drivers = _mapper.Map<List<DriverCreateShipmentViewModel>>(await _context.Drivers.Where(d => d.User.UserStatus == UserStatus.Active).Include(d => d.Vehicle.CarBrand).Include(d => d.Vehicle.CarType).Include(d => d.User).Include(d => d.Vehicle).ToListAsync());
                 ShipmentViewModel shipmentInitViewModel = new ShipmentViewModel
                 {
-                    Drivers = await _context.Drivers.Where(d => d.User.UserStatus == UserStatus.Active).Include(d => d.User).Include(d => d.Vehicle).ToListAsync(),
+                    Drivers = drivers,
                     PackageTypes = await _context.PackageTypes.ToListAsync(),
                     Regions = await _context.Regions.ToListAsync()
                 };
@@ -83,7 +84,7 @@ namespace MandobX.API.Controllers
                                                              .Include(s => s.Driver.User)
                                                              .Include(s => s.PackageType)
                                                              .Include(s => s.ToRegion)
-                                                             .Where(t => t.DriverId == driver.Id).ToListAsync();
+                                                             .Where(t => (t.DriverId == driver.Id || t.DriverId == "" || t.ShipmentStatus == ShipmentStatus.DriverRejected) && t.Price != 0).ToListAsync();
                 shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
                 return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
             }
@@ -225,6 +226,30 @@ namespace MandobX.API.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("ChangeStatus")]
+        public async Task<IActionResult> ChangeStatus(string shipmentId, int newStatus)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(shipmentId))
+                {
+                    var shipment = await _context.ShipmentOperations.FindAsync(shipmentId);
+                    if (shipment != null)
+                    {
+                        shipment.ShipmentStatus = (ShipmentStatus)newStatus;
+                        _context.ShipmentOperations.Update(shipment);
+                        await _context.SaveChangesAsync();
+                        return Ok(new Response { Code = "200", Data = null, Msg = "Task Completed Successfuly", Status = "1" });
+                    }
+                }
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" });
+            }
         }
 
         private bool ShipmentOperationExists(string id)

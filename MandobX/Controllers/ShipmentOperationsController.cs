@@ -215,7 +215,7 @@ namespace MandobX.Controllers
                 {
                     return NotFound();
                 }
-                shipment.ShipmentStatus = ShipmentStatus.Rejected;
+                shipment.ShipmentStatus = ShipmentStatus.AdminRejected;
                 _context.ShipmentOperations.Update(shipment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", new { id });

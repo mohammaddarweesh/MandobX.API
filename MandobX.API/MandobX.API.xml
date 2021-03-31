@@ -474,6 +474,66 @@
             <param name="app"></param>
             <param name="env"></param>
         </member>
+        <member name="T:MandobX.API.ViewModels.DriverCreateShipmentViewModel">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.UserId">
+            <summary>
+            Driver Id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.Points">
+            <summary>
+            Drivers Points
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.VehicleId">
+            <summary>
+            driver vehicle
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.VehicleType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.VehicleBrand">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.VehicleNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.VehicleVolume">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.Longitude">
+            <summary>
+            longitude of the Driver place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.Latitude">
+            <summary>
+            Latitude of the Driver place
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.FirstName">
+            <summary>
+            Driver first name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.DriverCreateShipmentViewModel.LastName">
+            <summary>
+            Driver last name
+            </summary>
+        </member>
         <member name="T:MandobX.API.ViewModels.LoginModel">
             <summary>
             login model

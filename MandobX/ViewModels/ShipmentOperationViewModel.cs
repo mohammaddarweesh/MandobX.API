@@ -33,5 +33,7 @@ namespace MandobX.API.ViewModels
         public int ToTraderCode { get; set; }
         [Display(Name = "Reciever Code")]
         public int ToRecieverCode { get; set; }
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
     }
 }
