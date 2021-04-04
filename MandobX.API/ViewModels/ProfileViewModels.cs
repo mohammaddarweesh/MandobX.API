@@ -8,7 +8,7 @@ namespace MandobX.API.ViewModels
     /// <summary>
     /// Edit profile View Model
     /// </summary>
-    public class EditProfileViewModel
+    public class EditDriverProfileViewModel
     {
         /// <summary>
         /// trader or driver id
@@ -45,4 +45,42 @@ namespace MandobX.API.ViewModels
         /// </summary>
         public string EmailAddress { get; set; }
     }
+    /// <summary>
+    /// Edit profile View Model
+    /// </summary>
+    public class EditTraderProfileViewModel
+    {
+        /// <summary>
+        /// trader or driver id
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Driver first name
+        /// </summary>
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// Driver last name
+        /// </summary>
+        public string LastName { get; set; }
+
+        /// <summary>
+        /// Phone Number
+        /// </summary>
+        public string PhoneNumber { get; set; }
+
+        /// <summary>
+        /// Email Address
+        /// </summary>
+        public string EmailAddress { get; set; }
+
+
+        /// <summary>
+        /// type of trading
+        /// </summary>
+        public string TypeOftradingId { get; set; }
+    }
+
+
 }

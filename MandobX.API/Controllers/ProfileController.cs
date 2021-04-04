@@ -40,32 +40,42 @@ namespace MandobX.API.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetDriverOrTrader(string userId)
+        [HttpGet("GetDriverProfile/{userId}")]
+        public async Task<IActionResult> GetDriverProfile(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                
-                if (user.UserType == UserRoles.Driver)
+                var driver = _context.Drivers.FirstOrDefault(d => d.UserId == userId);
+                EditDriverProfileViewModel details = _mapper.Map<EditDriverProfileViewModel>(driver);
+                if (driver != null)
                 {
-                    var driver = _context.Drivers.FirstOrDefault(d => d.UserId == userId);
-                    EditProfileViewModel details = _mapper.Map<EditProfileViewModel>(driver);
-                    if (driver != null)
-                    {
-                        return Ok(new Response { Code = "200", Data = new { CurrentUser = details, UserType = UserRoles.Driver }, Msg = "", Status = "1" });
-                    }
-                }
-                else if(user.UserType == UserRoles.Trader)
-                {
-                    var trader = _context.Traders.FirstOrDefault(d => d.UserId == userId);
-                    if (trader != null)
-                    {
-                        return Ok(new Response { Code = "200", Data = new { CurrentUser = trader, UserType = UserRoles.Trader }, Msg = "", Status = "1" });
-                    }
+                    return Ok(new Response { Code = "200", Data = new { CurrentUser = details, UserType = UserRoles.Driver }, Msg = "", Status = "1" });
                 }
             }
-            return NotFound(new Response { Msg = "User Not Found"});
+            return NotFound(new Response { Msg = "User Not Found" });
+        }
+
+        /// <summary>
+        /// get driver or trader details to update
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("GetTraderProfile/{userId}")]
+        public async Task<IActionResult> GetTraderProfile(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                Trader traderContext = _context.Traders.FirstOrDefault(d => d.UserId == userId);
+                EditTraderProfileViewModel trader = _mapper.Map<EditTraderProfileViewModel>(traderContext);
+                List<TypeOfTrading> typeOfTradings = _context.TypeOftradings.ToList();
+                if (trader != null)
+                {
+                    return Ok(new Response { Code = "200", Data = new { CurrentUser = trader, UserType = UserRoles.Trader, TypeOfTradings = typeOfTradings }, Msg = "", Status = "1" });
+                }
+            }
+            return NotFound(new Response { Msg = "User Not Found" });
         }
 
         /// <summary>
@@ -73,13 +83,13 @@ namespace MandobX.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> UpdateUser(EditProfileViewModel model)
+        [HttpPost("UpdateDriver")]
+        public async Task<IActionResult> UpdateDriver(EditDriverProfileViewModel model)
         {
-            if (model!=null)
+            if (model != null)
             {
                 var user = await _userManager.FindByIdAsync(model.Id);
-                if (user.UserType == UserRoles.Driver)
+                if (user != null)
                 {
                     var driver = _context.Drivers.FirstOrDefault(d => d.UserId == model.Id);
                     driver.FirstName = model.FirstName;
@@ -90,13 +100,35 @@ namespace MandobX.API.Controllers
                     driver.Longitude = model.Longitude;
                     _context.Drivers.Update(driver);
                 }
-                else if(user.UserType == UserRoles.Trader)
+                else
+                {
+                    return NotFound();
+                }
+                await _context.SaveChangesAsync();
+                return Ok(new Response { Code = "200", Data = null, Msg = "User Updated successfuly", Status = "1" });
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
+        /// Update user details driver or trader
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateTrader")]
+        public async Task<IActionResult> UpdateTrader(EditTraderProfileViewModel model)
+        {
+            if (model != null)
+            {
+                var user = await _userManager.FindByIdAsync(model.Id);
+                if (user != null)
                 {
                     var trader = _context.Traders.FirstOrDefault(d => d.UserId == model.Id);
                     trader.FirstName = model.FirstName;
                     trader.LastName = model.LastName;
                     trader.User.Email = model.EmailAddress;
                     trader.User.PhoneNumber = model.PhoneNumber;
+                    trader.TypeOftradingId = model.TypeOftradingId;
                     _context.Traders.Update(trader);
                 }
                 await _context.SaveChangesAsync();

@@ -27,10 +27,15 @@ namespace MandobX.Helpers
                 .ForMember(dest => dest.Trader, opt => opt.MapFrom(src => src.Trader.User.UserName));
             CreateMap<CreateVehicleViewModel, Vehicle>();
             CreateMap<EditShipmentViewModel, ShipmentOperation>();
-            CreateMap<Driver, EditProfileViewModel>()
+            CreateMap<Driver, EditDriverProfileViewModel>()
                 .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId));
+            CreateMap<Trader, EditTraderProfileViewModel>()
+                .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.TypeOftradingId, opt => opt.MapFrom(src => src.TypeOftradingId));
             CreateMap<Driver, DriverCreateShipmentViewModel>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
