@@ -2,10 +2,8 @@
 using MandobX.API.Authentication;
 using MandobX.API.Data;
 using MandobX.API.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,9 +128,13 @@ namespace MandobX.API.Controllers
                     trader.User.PhoneNumber = model.PhoneNumber;
                     trader.TypeOftradingId = model.TypeOftradingId;
                     _context.Traders.Update(trader);
+                    await _context.SaveChangesAsync();
+                    return Ok(new Response { Code = "200", Data = null, Msg = "User Updated successfuly", Status = "1" });
                 }
-                await _context.SaveChangesAsync();
-                return Ok(new Response { Code = "200", Data = null, Msg = "User Updated successfuly", Status = "1" });
+                else
+                {
+                    return NotFound();
+                }
             }
             return BadRequest();
         }

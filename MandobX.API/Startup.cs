@@ -18,6 +18,7 @@ using AutoMapper;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using MandobX.API.Services.Service;
 
 namespace MandobX.API
 {
@@ -85,6 +86,7 @@ namespace MandobX.API
             services.AddControllers();
 
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             services.AddSwaggerGen(c =>
             {

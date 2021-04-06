@@ -2,6 +2,9 @@
 
 namespace MandobX.API.ViewModels
 {
+    /// <summary>
+    /// Register Model
+    /// </summary>
     public class RegisterModel
     {
         /// <summary>
@@ -19,7 +22,7 @@ namespace MandobX.API.ViewModels
         /// <summary>
         /// confirm password 
         /// </summary>
-        [Required(ErrorMessage = "ConfirmPassword is required")]
+        [Required(ErrorMessage = "Confirm Password is required")]
         public string ConfirmPassword { get; set; }
 
         /// <summary>

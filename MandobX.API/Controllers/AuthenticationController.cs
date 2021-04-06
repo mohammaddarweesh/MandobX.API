@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace MandobX.API.Controllers
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
-
+        private readonly IMessageService _messageService;
         /// <summary>
         /// constructor
         /// </summary>
@@ -44,7 +45,17 @@ namespace MandobX.API.Controllers
         /// <param name="configuration"></param>
         /// <param name="identityService"></param>
         /// <param name="signInManager"></param>
-        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IIdentityService identityService, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context, IWebHostEnvironment environment)
+        /// <param name="context"></param>
+        /// <param name="environment"></param>
+        /// <param name="messageService"></param>
+        public AuthenticationController(UserManager<ApplicationUser> userManager,
+                                        RoleManager<IdentityRole> roleManager,
+                                        IConfiguration configuration,
+                                        IIdentityService identityService,
+                                        SignInManager<ApplicationUser> signInManager,
+                                        ApplicationDbContext context,
+                                        IWebHostEnvironment environment,
+                                        IMessageService messageService)
         {
             _configuration = configuration;
             this.userManager = userManager;
@@ -53,6 +64,7 @@ namespace MandobX.API.Controllers
             this.signInManager = signInManager;
             _context = context;
             _environment = environment;
+            _messageService = messageService;
         }
         /// <summary>
         /// login
@@ -139,6 +151,7 @@ namespace MandobX.API.Controllers
         {
             try
             {
+
                 Response response = await identityService.Register(registerModel, UserRoles.Driver);
                 if (response.Status == "1")
                 {
@@ -155,6 +168,7 @@ namespace MandobX.API.Controllers
                             claims: authClaims,
                             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                         );
+                    var issuccess = _messageService.SendMessage(registerModel.UserName, registerModel.PhoneNumber);
                     return Ok(new { response = response, token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
                 }
                 return Ok(response);
