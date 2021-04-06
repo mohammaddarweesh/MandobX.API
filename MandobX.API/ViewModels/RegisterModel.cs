@@ -36,6 +36,7 @@ namespace MandobX.API.ViewModels
         /// phone number
         /// </summary>
         [Required(ErrorMessage = "Phone Number is required")]
+        [RegularExpression(pattern:"^((\\+|00)?968)?[279]\\d{7}$", ErrorMessage ="please provide a valid phone number starting  with 00968 or +968 with 8 more digits starting with 2,7 or 9")]
         public string PhoneNumber { get; set; }
 
     }
