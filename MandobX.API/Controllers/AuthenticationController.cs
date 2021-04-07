@@ -149,36 +149,50 @@ namespace MandobX.API.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterDriver(RegisterModel registerModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-
-                Response response = await identityService.Register(registerModel, UserRoles.Driver);
-                if (response.Status == "1")
+                try
                 {
-                    List<Claim> authClaims = new List<Claim> {
+
+                    Response response = await identityService.Register(registerModel, UserRoles.Driver);
+                    if (response.Status == "1")
+                    {
+                        List<Claim> authClaims = new List<Claim> {
                         new Claim(ClaimTypes.Role, UserRoles.Driver),
                         new Claim(ClaimTypes.Name, registerModel.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     };
-                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                    var token = new JwtSecurityToken(
-                            issuer: _configuration["Jwt:Issuer"],
-                            audience: _configuration["Jwt:Audience"],
-                            expires: DateTime.Now.AddHours(3),
-                            claims: authClaims,
-                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                        );
-                    var issuccess = _messageService.SendMessage(registerModel.UserName, registerModel.PhoneNumber);
-                    return Ok(new { response = response, token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                        var token = new JwtSecurityToken(
+                                issuer: _configuration["Jwt:Issuer"],
+                                audience: _configuration["Jwt:Audience"],
+                                expires: DateTime.Now.AddHours(3),
+                                claims: authClaims,
+                                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                            );
+                        //var issuccess = _messageService.SendMessage(registerModel.UserName, registerModel.PhoneNumber);
+                        return Ok(new { response = response, token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+                    }
+                    return Ok(response);
                 }
-                return Ok(response);
+                catch (Exception e)
+                {
+
+                    return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = e.Message, Status = "0" });
+                }
             }
-            catch (Exception e)
+            else
             {
-
-                return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = e.Message, Status = "0" });
+                var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+                string msg = "";
+                foreach (var error in errors)
+                {
+                    msg = msg + error.ToString() + ",";
+                }
+                return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = msg, Status = "0" });
             }
-
         }
 
         [Route("registeradmin")]
