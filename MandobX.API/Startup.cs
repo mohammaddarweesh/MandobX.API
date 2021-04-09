@@ -57,13 +57,14 @@ namespace MandobX.API
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             // Adding authentication
-            services.AddAuthentication(options => {
+            services.AddAuthentication(options =>
+            {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
+            })
                 //for jwt bearer
                 .AddJwtBearer(options =>
                 {
@@ -82,8 +83,11 @@ namespace MandobX.API
 
                     };
                 });
-            
-            services.AddControllers();
+
+            services.AddControllers()
+                        .AddNewtonsoftJson(options =>
+                            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                        );
 
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IMessageService, MessageService>();

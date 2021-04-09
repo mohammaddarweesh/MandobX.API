@@ -131,6 +131,42 @@ namespace MandobX.API.Controllers
             }
         }
 
+        // GET: api/ShipmentOperations/5
+        /// <summary>
+        /// details of specific shipment operation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("GetEdit/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<ShipmentOperation>> GetShipmentOperationForEdit(string id)
+        {
+            try
+            {
+                var shipmentOperation = _context.ShipmentOperations
+                                                      .Include(s => s.Driver)
+                                                      .FirstOrDefault(s => s.Id == id);
+                if (shipmentOperation == null)
+                {
+                    return NotFound();
+                }
+                var editShipmentViewModel = _mapper.Map<EditShipmentViewModel>(shipmentOperation);
+                var drivers = _mapper.Map<List<DriverCreateShipmentViewModel>>(await _context.Drivers.Where(d => d.User.UserStatus == UserStatus.Active).Include(d => d.Vehicle.CarBrand).Include(d => d.Vehicle.CarType).Include(d => d.User).Include(d => d.Vehicle).ToListAsync());
+                ShipmentViewModel shipmentInitViewModel = new ShipmentViewModel
+                {
+                    Drivers = drivers,
+                    PackageTypes = await _context.PackageTypes.ToListAsync(),
+                    Regions = await _context.Regions.ToListAsync()
+                };
+                return Ok(new Response { Data = new { shipment = editShipmentViewModel, shipmentInitViewModel = shipmentInitViewModel }, Code = "200", Msg = "Success", Status = "1" });
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" });
+            }
+        }
+
         // PUT: api/ShipmentOperations/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         /// <summary>

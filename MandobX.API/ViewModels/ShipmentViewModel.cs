@@ -89,5 +89,6 @@ namespace MandobX.API.ViewModels
     public class EditShipmentViewModel:CreateShipmentViewModel
     {
         public string Id { get; set; }
+        public int Price { get; set; }
     }
 }

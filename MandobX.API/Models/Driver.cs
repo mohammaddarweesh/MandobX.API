@@ -36,7 +36,7 @@ namespace MandobX.API.Authentication
         /// <summary>
         /// driver shipment operations
         /// </summary>
-        public List<ShipmentOperation> ShipmentOperations { get; set; }
+        public virtual List<ShipmentOperation> ShipmentOperations { get; set; }
 
         /// <summary>
         /// driver user

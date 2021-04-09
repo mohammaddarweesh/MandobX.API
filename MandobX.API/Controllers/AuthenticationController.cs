@@ -224,29 +224,43 @@ namespace MandobX.API.Controllers
 
             try
             {
-                Response response = await identityService.Register(registerModel, UserRoles.Trader);
-                if (response.Status == "1")
+                if (ModelState.IsValid)
                 {
-                    List<Claim> authClaims = new List<Claim> {
+                    Response response = await identityService.Register(registerModel, UserRoles.Trader);
+                    if (response.Status == "1")
+                    {
+                        List<Claim> authClaims = new List<Claim> {
                         new Claim(ClaimTypes.Role, UserRoles.Trader),
                         new Claim(ClaimTypes.Name, registerModel.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     };
-                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                    var token = new JwtSecurityToken(
-                            issuer: _configuration["Jwt:Issuer"],
-                            audience: _configuration["Jwt:Audience"],
-                            expires: DateTime.Now.AddHours(3),
-                            claims: authClaims,
-                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                        );
-                    return Ok(new { response = response, token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                        var token = new JwtSecurityToken(
+                                issuer: _configuration["Jwt:Issuer"],
+                                audience: _configuration["Jwt:Audience"],
+                                expires: DateTime.Now.AddHours(3),
+                                claims: authClaims,
+                                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                            );
+                        return Ok(new { response = response, token = new JwtSecurityTokenHandler().WriteToken(token), expiration = token.ValidTo });
+                    }
+                    return Ok(response);
                 }
-                return Ok(response);
+                else
+                {
+                    var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+                    string msg = "";
+                    foreach (var error in errors)
+                    {
+                        msg = msg + error.ToString() + ",";
+                    }
+                    return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = msg, Status = "0" });
+                }
             }
             catch (Exception e)
             {
-
                 return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = e.Message, Status = "0" });
             }
         }

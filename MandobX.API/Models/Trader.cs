@@ -21,7 +21,7 @@ namespace MandobX.API.Authentication
         /// <summary>
         /// trader's shipment operation
         /// </summary>
-        public List<ShipmentOperation> ShipmentOperations { get; set; }
+        public virtual List<ShipmentOperation> ShipmentOperations { get; set; }
         /// <summary>
         /// type of trading
         /// </summary>
