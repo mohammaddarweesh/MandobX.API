@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>4ec03f0b-294a-4bc3-ba21-c3f8d2d07e66</UserSecretsId>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AllowUntrustedCertificate>True</AllowUntrustedCertificate>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -9,7 +9,7 @@
             Authentaication controler
             </summary>
         </member>
-        <member name="M:MandobX.API.Controllers.AuthenticationController.#ctor(Microsoft.AspNetCore.Identity.UserManager{MandobX.API.Authentication.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{Microsoft.AspNetCore.Identity.IdentityRole},Microsoft.Extensions.Configuration.IConfiguration,MandobX.API.Services.IService.IIdentityService,Microsoft.AspNetCore.Identity.SignInManager{MandobX.API.Authentication.ApplicationUser},MandobX.API.Data.ApplicationDbContext,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+        <member name="M:MandobX.API.Controllers.AuthenticationController.#ctor(Microsoft.AspNetCore.Identity.UserManager{MandobX.API.Authentication.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{Microsoft.AspNetCore.Identity.IdentityRole},Microsoft.Extensions.Configuration.IConfiguration,MandobX.API.Services.IService.IIdentityService,Microsoft.AspNetCore.Identity.SignInManager{MandobX.API.Authentication.ApplicationUser},MandobX.API.Data.ApplicationDbContext,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,MandobX.API.Services.IService.IMessageService)">
             <summary>
             constructor
             </summary>
@@ -18,6 +18,9 @@
             <param name="configuration"></param>
             <param name="identityService"></param>
             <param name="signInManager"></param>
+            <param name="context"></param>
+            <param name="environment"></param>
+            <param name="messageService"></param>
         </member>
         <member name="M:MandobX.API.Controllers.AuthenticationController.Login(MandobX.API.ViewModels.LoginModel)">
             <summary>
@@ -66,14 +69,28 @@
             <param name="userManager"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:MandobX.API.Controllers.ProfileController.GetDriverOrTrader(System.String)">
+        <member name="M:MandobX.API.Controllers.ProfileController.GetDriverProfile(System.String)">
             <summary>
             get driver or trader details to update
             </summary>
             <param name="userId"></param>
             <returns></returns>
         </member>
-        <member name="M:MandobX.API.Controllers.ProfileController.UpdateUser(MandobX.API.ViewModels.EditProfileViewModel)">
+        <member name="M:MandobX.API.Controllers.ProfileController.GetTraderProfile(System.String)">
+            <summary>
+            get driver or trader details to update
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ProfileController.UpdateDriver(MandobX.API.ViewModels.EditDriverProfileViewModel)">
+            <summary>
+            Update user details driver or trader
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ProfileController.UpdateTrader(MandobX.API.ViewModels.EditTraderProfileViewModel)">
             <summary>
             Update user details driver or trader
             </summary>
@@ -113,6 +130,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.GetShipmentOperationForEdit(System.String)">
+            <summary>
+            details of specific shipment operation
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:MandobX.API.Controllers.ShipOpsController.PutShipmentOperation(System.String,MandobX.API.ViewModels.EditShipmentViewModel)">
             <summary>
             update shipment operation
@@ -133,6 +157,14 @@
             delete shipment operation
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MandobX.API.Controllers.ShipOpsController.ChangeStatus(System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="shipmentId"></param>
+            <param name="newStatus"></param>
             <returns></returns>
         </member>
         <member name="T:MandobX.API.Controllers.VehiclesController">
@@ -424,6 +456,19 @@
              UploadedFiles of the vehicle
             </Summary>
         </member>
+        <member name="T:MandobX.API.Services.Service.MessageService">
+            <summary>
+            Message service
+            </summary>
+        </member>
+        <member name="M:MandobX.API.Services.Service.MessageService.SendMessage(System.String,System.String)">
+            <summary>
+            Send message to user using sms
+            </summary>
+            <param name="PhoneNumber"></param>
+            <param name="Msg"></param>
+            <returns></returns>
+        </member>
         <member name="T:MandobX.API.Services.IdentityService">
             <summary>
             identity service 
@@ -554,44 +599,84 @@
             phone number
             </summary>
         </member>
-        <member name="T:MandobX.API.ViewModels.EditProfileViewModel">
+        <member name="T:MandobX.API.ViewModels.EditDriverProfileViewModel">
             <summary>
             Edit profile View Model
             </summary>
         </member>
-        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.Id">
+        <member name="P:MandobX.API.ViewModels.EditDriverProfileViewModel.Id">
             <summary>
             trader or driver id
             </summary>
         </member>
-        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.Longitude">
+        <member name="P:MandobX.API.ViewModels.EditDriverProfileViewModel.Longitude">
             <summary>
             longitude of the Driver place
             </summary>
         </member>
-        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.Latitude">
+        <member name="P:MandobX.API.ViewModels.EditDriverProfileViewModel.Latitude">
             <summary>
             Latitude of the Driver place
             </summary>
         </member>
-        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.FirstName">
+        <member name="P:MandobX.API.ViewModels.EditDriverProfileViewModel.FirstName">
             <summary>
             Driver first name
             </summary>
         </member>
-        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.LastName">
+        <member name="P:MandobX.API.ViewModels.EditDriverProfileViewModel.LastName">
             <summary>
             Driver last name
             </summary>
         </member>
-        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.PhoneNumber">
+        <member name="P:MandobX.API.ViewModels.EditDriverProfileViewModel.PhoneNumber">
             <summary>
             Phone Number
             </summary>
         </member>
-        <member name="P:MandobX.API.ViewModels.EditProfileViewModel.EmailAddress">
+        <member name="P:MandobX.API.ViewModels.EditDriverProfileViewModel.EmailAddress">
             <summary>
             Email Address
+            </summary>
+        </member>
+        <member name="T:MandobX.API.ViewModels.EditTraderProfileViewModel">
+            <summary>
+            Edit profile View Model
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditTraderProfileViewModel.Id">
+            <summary>
+            trader or driver id
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditTraderProfileViewModel.FirstName">
+            <summary>
+            Driver first name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditTraderProfileViewModel.LastName">
+            <summary>
+            Driver last name
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditTraderProfileViewModel.PhoneNumber">
+            <summary>
+            Phone Number
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditTraderProfileViewModel.EmailAddress">
+            <summary>
+            Email Address
+            </summary>
+        </member>
+        <member name="P:MandobX.API.ViewModels.EditTraderProfileViewModel.TypeOftradingId">
+            <summary>
+            type of trading
+            </summary>
+        </member>
+        <member name="T:MandobX.API.ViewModels.RegisterModel">
+            <summary>
+            Register Model
             </summary>
         </member>
         <member name="P:MandobX.API.ViewModels.RegisterModel.UserName">
