@@ -10,5 +10,6 @@ namespace MandobX.API.Services.IService
     public interface IIdentityService
     {
         Task<Response> Register(RegisterModel registerModel, string role);
+        Task<Response> VerifyUser(string verificationCode, string userId);
     }
 }

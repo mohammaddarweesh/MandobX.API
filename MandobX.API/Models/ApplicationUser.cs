@@ -15,6 +15,7 @@ namespace MandobX.API.Authentication
         public List<UploadedFile> UploadedFiles { get; set; }
         public UserStatus UserStatus { get; set; }
         public bool AccountActivated { get; set; }
+        public int VerificationCode { get; set; }
 
     }
 }

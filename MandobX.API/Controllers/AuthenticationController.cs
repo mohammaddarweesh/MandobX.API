@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -194,23 +193,27 @@ namespace MandobX.API.Controllers
                 return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = msg, Status = "0" });
             }
         }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="registerModel"></param>
+        ///// <returns></returns>
+        //[Route("registeradmin")]
+        //[HttpPost]
+        //public async Task<IActionResult> RegisterAdmin(RegisterModel registerModel)
+        //{
+        //    try
+        //    {
+        //        Response response = await identityService.Register(registerModel, UserRoles.Admin);
+        //        return Ok(response);
+        //    }
+        //    catch (Exception e)
+        //    {
 
-        [Route("registeradmin")]
-        [HttpPost]
-        public async Task<IActionResult> RegisterAdmin(RegisterModel registerModel)
-        {
-            try
-            {
-                Response response = await identityService.Register(registerModel, UserRoles.Admin);
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
+        //        return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = e.Message, Status = "0" });
+        //    }
 
-                return StatusCode(StatusCodes.Status417ExpectationFailed, new Response { Msg = e.Message, Status = "0" });
-            }
-
-        }
+        //}
 
         /// <summary>
         /// Register Trader
@@ -268,6 +271,8 @@ namespace MandobX.API.Controllers
         /// upload images to driver or trader
         /// </summary>
         /// <param name="formFiles"></param>
+        /// <param name="userId"></param>
+        /// <param name="fileType"></param>
         /// <returns></returns>
         [Route("uploadimages")]
         [HttpPost]
@@ -296,6 +301,33 @@ namespace MandobX.API.Controllers
             catch (Exception e)
             {
                 return BadRequest(new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" });
+            }
+        }
+
+        /// <summary>
+        /// Verify user account
+        /// </summary>
+        /// <param name="verificationCode"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost("verifyaccount")]
+        public IActionResult VerifyAccount(string verificationCode, string userId)
+        {
+            if (!string.IsNullOrEmpty(userId))
+            {
+                if (!string.IsNullOrEmpty(verificationCode))
+                {
+                    var res = identityService.VerifyUser(verificationCode, userId);
+                    return Ok(new Response { Code = "200", Data = null, Msg = "Account Verified Successfuly", Status = "1" });
+                }
+                else
+                {
+                    return Ok(new Response { Code = "200", Data = null, Msg = "please add the versification code", Status = "0" });
+                }
+            }
+            else
+            {
+                return NotFound(new Response { Code = "200", Data = null, Msg = "User not found", Status = "0" });
             }
         }
     }

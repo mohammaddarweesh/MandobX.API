@@ -102,5 +102,42 @@ namespace MandobX.API.Services
             }
 
         }
+
+        /// <summary>
+        /// verify user code sent to its mobile
+        /// </summary>
+        /// <param name="verificationCode"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<Response> VerifyUser(string verificationCode, string userId)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(userId);
+                if (user!=null)
+                {
+                    if (user.UserStatus == UserStatus.PendingMessageApproval)
+                    {
+                        if (user.VerificationCode == int.Parse(verificationCode))
+                        {
+                            user.UserStatus = UserStatus.Active;
+                            user.PhoneNumberConfirmed = true;
+                            await userManager.UpdateAsync(user);
+                            return new Response { Data = null, Status = "1", Msg = "User Verified succssfuly", Code = "200" };
+                        }
+                        return new Response { Data = null, Status = "1", Msg = "User was not Verified succssfuly" };
+                    }
+                    return new Response { Data = null, Status = "1", Msg = "User is not waiting for versification code" };
+                }
+                else
+                {
+                    return new Response { Data = null, Status = "0", Msg = "User was not found", Code = "500" };
+                }
+            }
+            catch (Exception e)
+            {
+                return new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" };
+            }
+        }
     }
 }

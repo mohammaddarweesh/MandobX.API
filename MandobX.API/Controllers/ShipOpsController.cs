@@ -84,7 +84,7 @@ namespace MandobX.API.Controllers
                                                              .Include(s => s.Driver.User)
                                                              .Include(s => s.PackageType)
                                                              .Include(s => s.ToRegion)
-                                                             .Where(t => t.DriverId == driver.Id && t.ShipmentStatus != ShipmentStatus.DriverRejected && t.Price != 0).ToListAsync();
+                                                             .Where(t => t.DriverId == driver.Id && t.ShipmentStatus != ShipmentStatus.DriverRejected && t.ShipmentStatus != ShipmentStatus.AdminRejected && t.ShipmentStatus != ShipmentStatus.Pending && t.Price != 0).ToListAsync();
                                                              //.Where(t => (t.DriverId == driver.Id || t.DriverId == "" || t.ShipmentStatus == ShipmentStatus.DriverRejected) && t.Price != 0).ToListAsync();
                 shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
                 return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
