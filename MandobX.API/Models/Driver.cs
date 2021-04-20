@@ -68,5 +68,10 @@ namespace MandobX.API.Authentication
         /// </summary>
         public string LastName { get; set; }
 
+        /// <summary>
+        /// Driver Rate
+        /// </summary>
+        public float Rate { get; set; }
+
     }
 }

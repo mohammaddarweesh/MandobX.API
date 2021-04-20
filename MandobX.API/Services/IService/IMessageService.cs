@@ -7,6 +7,6 @@ namespace MandobX.API.Services.IService
 {
     public interface IMessageService
     {
-        Task<bool> SendMessage(string PhoneNumber, string Msg);
+        Task<int> SendMessage(string PhoneNumber, string Msg);
     }
 }

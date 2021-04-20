@@ -115,7 +115,14 @@ namespace MandobX.API.Controllers
         {
             try
             {
-                var shipmentOperation = await _context.ShipmentOperations.FindAsync(id);
+                var shipmentOperation = await _context.ShipmentOperations
+                    .Include(s => s.Driver)
+                    .Include(s => s.FromRegion)
+                    .Include(s => s.GoogleMap)
+                    .Include(s => s.PackageType)
+                    .Include(s => s.ToRegion)
+                    .Include(s => s.Trader)
+                    .FirstOrDefaultAsync(s => s.Id == id);
 
                 if (shipmentOperation == null)
                 {
@@ -225,7 +232,7 @@ namespace MandobX.API.Controllers
                     var trader = await _context.Traders.FirstOrDefaultAsync(t => t.UserId == shipmentOperationViewModel.TraderId);
                     var driver = await _context.Drivers.FirstOrDefaultAsync(d => d.UserId == shipmentOperationViewModel.DriverId);
                     shipmentOperationViewModel.TraderId = trader.Id;
-                    shipmentOperationViewModel.DriverId = driver.Id;
+                    shipmentOperationViewModel.DriverId = driver?.Id ?? string.Empty;
                     ShipmentOperation shipmentOperation = _mapper.Map<ShipmentOperation>(shipmentOperationViewModel);
                     shipmentOperation.GoogleMapId = googleMap.Id;
                     shipmentOperation.CreationDate = DateTime.Now.ToString();

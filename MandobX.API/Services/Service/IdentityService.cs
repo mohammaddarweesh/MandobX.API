@@ -52,6 +52,7 @@ namespace MandobX.API.Services
                     PhoneNumber = registerModel.PhoneNumber
                 };
                 var result = await userManager.CreateAsync(user, registerModel.Password);
+                //var verificationCode = _messageService.SendMessage(registerModel.PhoneNumber, Msg);
                 await dbContext.SaveChangesAsync();
                 if(result.Succeeded)
                 {

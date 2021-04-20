@@ -55,7 +55,6 @@ namespace MandobX.API.ViewModels
         [Required(ErrorMessage = "Shipment Date is Required")]
         public string ShipmentDate { get; set; }
 
-        [Required(ErrorMessage = "Driver is Required")]
         public string DriverId { get; set; }
 
         [Required(ErrorMessage = "Trader is Required")]

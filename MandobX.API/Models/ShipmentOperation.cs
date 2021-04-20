@@ -17,7 +17,7 @@ namespace MandobX.API.Models
         public string CreationDate { get; set; }
         public string ShipmentDate { get; set; }
         public virtual Driver Driver { get; set; }
-        public string DriverId { get; set; }
+        public string? DriverId { get; set; }
         public virtual Trader Trader { get; set; }
         public string TraderId { get; set; }
         public string RecieverPhoneNumber { get; set; }
