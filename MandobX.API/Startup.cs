@@ -120,6 +120,8 @@ namespace MandobX.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MandobX.API v1"));
             }
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             //app.UseAuthorization();
