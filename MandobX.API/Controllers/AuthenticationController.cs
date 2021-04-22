@@ -1,5 +1,6 @@
 ﻿using MandobX.API.Authentication;
 using MandobX.API.Data;
+using MandobX.API.Models;
 using MandobX.API.Services.IService;
 using MandobX.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -278,19 +279,32 @@ namespace MandobX.API.Controllers
                 {
                     return Ok(new Response { Code = "200", Data = null, Msg = "Please upload one file at least", Status = "0" });
                 }
-                foreach (IFormFile file in formFiles)
+                if (!Directory.Exists(_environment.ContentRootPath + "\\wwwroot\\Images\\"))
                 {
-                    if (!Directory.Exists(_environment.ContentRootPath + "\\Uploads"))
+                    Directory.CreateDirectory(_environment.ContentRootPath + "\\wwwroot\\Images\\");
+                }
+                long dateTime;
+                string fileName;
+                foreach (var formFile in formFiles)
+                {
+                    DateTime dateDate = DateTime.Now;
+                    dateTime = long.Parse(dateDate.Year.ToString()) * 100000000 + long.Parse(dateDate.Month.ToString()) * 1000000 + long.Parse(dateDate.Day.ToString()) * 10000 + long.Parse(dateDate.Hour.ToString()) * 100 + long.Parse(dateDate.Minute.ToString());
+                    fileName = dateTime.ToString() + formFile.FileName;
+                    using (FileStream filestream = System.IO.File.Create(_environment.ContentRootPath + "\\wwwroot\\Images\\" + fileName))
                     {
-                        Directory.CreateDirectory(_environment.ContentRootPath + "\\Uploads");
-                    }
-                    using (FileStream filestream = System.IO.File.Create(_environment.ContentRootPath + "\\uploads\\" + file.FileName))
-                    {
-                        file.CopyTo(filestream);
+                        formFile.CopyTo(filestream);
                         filestream.Flush();
                     }
+                    UploadedFile uploadedFile = new UploadedFile
+                    {
+                        FilePath = fileName,
+                        FileType = (FileType)int.Parse(fileType),
+                        UserId = userId
+                    };
+                    await _context.UploadedFiles.AddAsync(uploadedFile);
                 }
-                return Ok(new { t = _environment.ContentRootPath, f = _environment.WebRootPath });
+                await _context.SaveChangesAsync();
+                return Ok(new Response { Code = "200", Data = null, Msg = "Files Uploaded Successfuly", Status = "1" });
             }
             catch (Exception e)
             {
@@ -305,13 +319,13 @@ namespace MandobX.API.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpPost("verifyaccount")]
-        public IActionResult VerifyAccount(string verificationCode, string userId)
+        public async Task<IActionResult> VerifyAccount(string verificationCode, string userId)
         {
             if (!string.IsNullOrEmpty(userId))
             {
                 if (!string.IsNullOrEmpty(verificationCode))
                 {
-                    var res = identityService.VerifyUser(verificationCode, userId);
+                    var res = await identityService.VerifyUser(verificationCode, userId);
                     return Ok(new Response { Code = "200", Data = null, Msg = "Account Verified Successfuly", Status = "1" });
                 }
                 else

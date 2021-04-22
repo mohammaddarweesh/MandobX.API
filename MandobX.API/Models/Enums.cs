@@ -16,6 +16,7 @@
         Identity = 0,
         Vehicle = 1,
         DrivingLicence = 2,
+        TraderDoc = 3,
     }
 
     public enum ContentType

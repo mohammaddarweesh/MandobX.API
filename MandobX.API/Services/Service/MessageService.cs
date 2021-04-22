@@ -31,7 +31,7 @@ namespace MandobX.API.Services.Service
             var rand = new Random();
             var code = rand.Next(100000, 1000000);
             Msg = Msg + " " + code.ToString();
-            var response = await client.GetAsync($"?username={UserName}&password={Password}&language=2&sender=MOLATCOM&mobile={PhoneNumber}&message={Msg}");
+            var response = await client.GetAsync($"?username={UserName}&password={Password}&language=1&sender=MOLATCOM&mobile={PhoneNumber}&message={Msg}");
             var a = response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

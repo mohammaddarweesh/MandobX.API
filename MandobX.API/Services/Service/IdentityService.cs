@@ -17,17 +17,20 @@ namespace MandobX.API.Services
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly ApplicationDbContext dbContext;
+        private readonly IMessageService _messageService;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="userManager"></param>
         /// <param name="roleManager"></param>
         /// <param name="dbContext"></param>
-        public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext dbContext)
+        public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext dbContext, IMessageService messageService)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
             this.dbContext = dbContext;
+            _messageService = messageService;
         }
         /// <summary>
         /// Register for trader and driver
@@ -52,14 +55,23 @@ namespace MandobX.API.Services
                     PhoneNumber = registerModel.PhoneNumber
                 };
                 var result = await userManager.CreateAsync(user, registerModel.Password);
-                //var verificationCode = _messageService.SendMessage(registerModel.PhoneNumber, Msg);
                 await dbContext.SaveChangesAsync();
                 if(result.Succeeded)
                 {
                     user = await userManager.FindByNameAsync(registerModel.UserName);
+                    var verificationCode = _messageService.SendMessage(registerModel.PhoneNumber, "your + delivery + code + is +");
+                    //while (true)
+                    //{
+                    //    if (verificationCode.IsCompleted)
+                    //    {
+                    //        break;
+                    //    }
+                    //}
                     switch (role)
                     {
                         case UserRoles.Driver:
+                            user.VerificationCode = await verificationCode;
+                            user.UserStatus = UserStatus.PendingMessageApproval;
                             var driver = new Driver
                             {
                                 UserId = user.Id,
@@ -69,6 +81,8 @@ namespace MandobX.API.Services
                             var x = await dbContext.SaveChangesAsync();
                             break;
                         case UserRoles.Trader:
+                            user.VerificationCode = await verificationCode;
+                            user.UserStatus = UserStatus.PendingMessageApproval;
                             var trader = new Trader
                             {
                                 UserId = user.Id,
@@ -99,7 +113,7 @@ namespace MandobX.API.Services
 
             catch (Exception e)
             {
-                throw;
+                return new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" };
             }
 
         }
