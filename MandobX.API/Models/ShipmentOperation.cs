@@ -29,5 +29,6 @@ namespace MandobX.API.Models
         public ShipmentStatus ShipmentStatus { get; set; }
         public int ToTraderCode { get; set; }
         public int ToRecieverCode { get; set; }
+        public bool IsUrgent { get; set; } = false;
     }
 }

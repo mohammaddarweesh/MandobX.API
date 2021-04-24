@@ -9,7 +9,8 @@
         OnTheWay = 4,
         Shipped = 5,
         AdminRejected = 6,
-        DriverRejected = 7
+        DriverRejected = 7,
+        TraderAccepted = 8,
     }
     public enum FileType
     {

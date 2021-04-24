@@ -13,11 +13,13 @@ namespace MandobX.API.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<OfferApplicationUser>().HasKey(auf => new { auf.ApplicationUserId, auf.OfferId });
-            builder.Entity<ShipmentOperation>().HasOne(s => s.Driver)
-                .WithMany(d => d.ShipmentOperations)
-                .HasForeignKey(s => s.DriverId)
-                .IsRequired(false);
+            builder.Entity<OfferApplicationUser>()
+                        .HasKey(auf => new { auf.ApplicationUserId, auf.OfferId });
+            builder.Entity<ShipmentOperation>()
+                        .HasOne(s => s.Driver)
+                        .WithMany(d => d.ShipmentOperations)
+                        .HasForeignKey(s => s.DriverId)
+                        .IsRequired(false);
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { set; get; }

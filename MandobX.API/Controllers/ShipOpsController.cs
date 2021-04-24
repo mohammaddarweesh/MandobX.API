@@ -11,6 +11,7 @@ using MandobX.API.Authentication;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using MandobX.API.Services.IService;
 
 namespace MandobX.API.Controllers
 {
@@ -25,17 +26,21 @@ namespace MandobX.API.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IMessageService _messageService;
+
         /// <summary>
         /// constructor
         /// </summary>
         /// <param name="mapper"></param>
         /// <param name="context"></param>
         /// <param name="userManager"></param>
-        public ShipOpsController(IMapper mapper, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        /// <param name="messageService"></param>
+        public ShipOpsController(IMapper mapper, ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMessageService messageService)
         {
             _context = context;
             _mapper = mapper;
             this.userManager = userManager;
+            _messageService = messageService;
         }
 
         //Get lists of drivers, regions and packagges type to create shipment operation
@@ -85,7 +90,6 @@ namespace MandobX.API.Controllers
                                                              .Include(s => s.PackageType)
                                                              .Include(s => s.ToRegion)
                                                              .Where(t => t.DriverId == driver.Id && t.ShipmentStatus != ShipmentStatus.DriverRejected && t.ShipmentStatus != ShipmentStatus.AdminRejected && t.ShipmentStatus != ShipmentStatus.Pending && t.Price != 0).ToListAsync();
-                                                             //.Where(t => (t.DriverId == driver.Id || t.DriverId == "" || t.ShipmentStatus == ShipmentStatus.DriverRejected) && t.Price != 0).ToListAsync();
                 shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
                 return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
             }
@@ -277,17 +281,49 @@ namespace MandobX.API.Controllers
         /// </summary>
         /// <param name="shipmentId"></param>
         /// <param name="newStatus"></param>
+        /// <param name="Code"></param>
         /// <returns></returns>
         [HttpPost("ChangeStatus")]
-        public async Task<IActionResult> ChangeStatus(string shipmentId, int newStatus)
+        public async Task<IActionResult> ChangeStatus(string shipmentId, int newStatus, string Code)
         {
             try
             {
                 if (!string.IsNullOrEmpty(shipmentId))
                 {
-                    var shipment = await _context.ShipmentOperations.FindAsync(shipmentId);
+                    var shipment = await _context.ShipmentOperations.Include(s => s.Trader.User).FirstOrDefaultAsync(s => s.Id == shipmentId);
+                    
                     if (shipment != null)
                     {
+                        string phoneNumber = shipment.Trader.User.PhoneNumber;
+                        if (newStatus == (int)ShipmentStatus.TraderAccepted)
+                        {
+                            int toTradercode = await _messageService.SendMessage(phoneNumber, "your + pick-up + Code + is +");
+                            if (toTradercode == 0)
+                            {
+                                return BadRequest(new Response { Code = "500", Data = null, Msg = "Something went wrong please try again later", Status = "0" });
+                            }
+                            shipment.ToTraderCode = toTradercode;
+                        }
+                        else if(newStatus == (int)ShipmentStatus.OnTheWay)
+                        {
+                            if (int.Parse(Code) != shipment.ToTraderCode)
+                            {
+                                return BadRequest(new Response { Code = "500", Data = null, Msg = "Please provide the correct code we sent to the trader", Status = "0" });
+                            }
+                            int toRecievercode = await _messageService.SendMessage(shipment.RecieverPhoneNumber, "Your + Recieving + Code + is +");
+                            if (toRecievercode == 0)
+                            {
+                                return BadRequest(new Response { Code = "500", Data = null, Msg = "Something went wrong please try again later", Status = "0" });
+                            }
+                            shipment.ToRecieverCode = toRecievercode;
+                        }
+                        else if(newStatus == (int)ShipmentStatus.Shipped)
+                        {
+                            if (int.Parse(Code) != shipment.ToRecieverCode)
+                            {
+                                return BadRequest(new Response { Code = "500", Data = null, Msg = "Please provide the correct code we sent to the reciever", Status = "0" });
+                            }
+                        }
                         shipment.ShipmentStatus = (ShipmentStatus)newStatus;
                         _context.ShipmentOperations.Update(shipment);
                         await _context.SaveChangesAsync();

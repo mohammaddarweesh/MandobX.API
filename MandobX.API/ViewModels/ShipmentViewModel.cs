@@ -41,6 +41,7 @@ namespace MandobX.API.ViewModels
         public int ToTraderCode { get; set; }
         [Display(Name = "Reciever Code")]
         public int ToRecieverCode { get; set; }
+        public bool IsUrgent { get; set; } = false;
     } 
     public class CreateShipmentViewModel
     {
@@ -61,6 +62,7 @@ namespace MandobX.API.ViewModels
         public string TraderId { get; set; }
 
         [Required(ErrorMessage = "Reciever Phone Number is Required")]
+        [RegularExpression(pattern: "^((\\+|00)?968)?[279]\\d{7}$", ErrorMessage = "please provide a valid phone number starting  with 00968 or +968 with 8 more digits starting with 2,7 or 9")]
         public string RecieverPhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Reciever Name is Required")]
@@ -83,6 +85,7 @@ namespace MandobX.API.ViewModels
 
         [Required(ErrorMessage = "Distance is Required")]
         public double Distance { get; set; }
+        public bool IsUrgent { get; set; } = false;
     }
 
     public class EditShipmentViewModel:CreateShipmentViewModel

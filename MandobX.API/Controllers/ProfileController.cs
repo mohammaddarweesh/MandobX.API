@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MandobX.API.Authentication;
 using MandobX.API.Data;
+using MandobX.API.Models;
 using MandobX.API.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -46,9 +48,14 @@ namespace MandobX.API.Controllers
             {
                 var driver = _context.Drivers.FirstOrDefault(d => d.UserId == userId);
                 EditDriverProfileViewModel details = _mapper.Map<EditDriverProfileViewModel>(driver);
+                List<UploadedFile> uploadedFiles = _context.UploadedFiles.Where(u => u.UserId == userId && u.FileType != FileType.Vehicle).ToList();
+                foreach (var uploadedFile in uploadedFiles)
+                {
+                    uploadedFile.FilePath = "http://mori23-001-site1.dtempurl.com/images/" + uploadedFile.FilePath;
+                }
                 if (driver != null)
                 {
-                    return Ok(new Response { Code = "200", Data = new { CurrentUser = details, UserType = UserRoles.Driver }, Msg = "", Status = "1" });
+                    return Ok(new Response { Code = "200", Data = new { CurrentUser = details, UserType = UserRoles.Driver, UploadedFiles = uploadedFiles }, Msg = "", Status = "1" });
                 }
             }
             return NotFound(new Response { Msg = "User Not Found" });
@@ -68,9 +75,14 @@ namespace MandobX.API.Controllers
                 Trader traderContext = _context.Traders.FirstOrDefault(d => d.UserId == userId);
                 EditTraderProfileViewModel trader = _mapper.Map<EditTraderProfileViewModel>(traderContext);
                 List<TypeOfTrading> typeOfTradings = _context.TypeOftradings.ToList();
+                List<UploadedFile> uploadedFiles = _context.UploadedFiles.Where(u => u.UserId == userId).ToList();
+                foreach (var uploadedFile in uploadedFiles)
+                {
+                    uploadedFile.FilePath = "http://mori23-001-site1.dtempurl.com/images/" + uploadedFile.FilePath;
+                }
                 if (trader != null)
                 {
-                    return Ok(new Response { Code = "200", Data = new { CurrentUser = trader, UserType = UserRoles.Trader, TypeOfTradings = typeOfTradings }, Msg = "", Status = "1" });
+                    return Ok(new Response { Code = "200", Data = new { CurrentUser = trader, UserType = UserRoles.Trader, TypeOfTradings = typeOfTradings, UploadedFiles = uploadedFiles }, Msg = "", Status = "1" });
                 }
             }
             return NotFound(new Response { Msg = "User Not Found" });

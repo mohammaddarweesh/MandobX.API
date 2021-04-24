@@ -275,6 +275,8 @@ namespace MandobX.API.Controllers
         {
             try
             {
+                var uploadedfiles = _context.UploadedFiles.Where(u => u.UserId == userId && u.FileType == (FileType)int.Parse(fileType)).ToList();
+                _context.UploadedFiles.RemoveRange(uploadedfiles);
                 if (formFiles == null)
                 {
                     return Ok(new Response { Code = "200", Data = null, Msg = "Please upload one file at least", Status = "0" });
