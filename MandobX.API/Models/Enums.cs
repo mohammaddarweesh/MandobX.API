@@ -11,6 +11,7 @@
         AdminRejected = 6,
         DriverRejected = 7,
         TraderAccepted = 8,
+        DriverRequested = 9,
     }
     public enum FileType
     {

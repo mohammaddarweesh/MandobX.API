@@ -73,7 +73,7 @@ namespace MandobX.API.Controllers
         {
             if (string.IsNullOrEmpty(loginModel.PhoneNumber) && string.IsNullOrEmpty(loginModel.UserName))
             {
-                return Ok(new Response { Code = "500", Data = null, Msg = "Please fill one of the following: user name or phone number", Status = "0" });
+                return BadRequest(new Response { Code = "500", Data = null, Msg = "Please fill one of the following: user name or phone number", Status = "0" });
             }
             var user = await userManager.FindByNameAsync(loginModel.UserName);
             if (user == null && !string.IsNullOrEmpty(loginModel.PhoneNumber))
@@ -101,6 +101,12 @@ namespace MandobX.API.Controllers
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
                 await signInManager.SignInAsync(user, true);
+                string vehicleId = "";
+                if (user.UserType == UserRoles.Driver)
+                {
+                    var driver = _context.Drivers.FirstOrDefault(d => d.UserId == user.Id);
+                    vehicleId = driver.VehicleId;
+                }
                 var response = new Response
                 {
                     Status = "1",
@@ -108,7 +114,8 @@ namespace MandobX.API.Controllers
                     Data = new
                     {
                         userId = user.Id,
-                        userType = user.UserType
+                        userType = user.UserType,
+                        vehicleId = vehicleId
                     }
                 };
 

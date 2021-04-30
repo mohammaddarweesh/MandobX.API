@@ -87,9 +87,11 @@ namespace MandobX.API.Controllers
                 var driver = _context.Drivers.FirstOrDefault(d => d.UserId == userid);
                 shipments = await _context.ShipmentOperations.Include(s => s.FromRegion)
                                                              .Include(s => s.Driver.User)
+                                                             .Include(s => s.Trader.User)
                                                              .Include(s => s.PackageType)
                                                              .Include(s => s.ToRegion)
-                                                             .Where(t => t.DriverId == driver.Id && t.ShipmentStatus != ShipmentStatus.DriverRejected && t.ShipmentStatus != ShipmentStatus.AdminRejected && t.ShipmentStatus != ShipmentStatus.Pending && t.Price != 0).ToListAsync();
+                                                             .Include(s => s.GoogleMap)
+                                                             .Where(t => t.DriverId == driver.Id && t.ShipmentStatus != ShipmentStatus.DriverRejected && t.ShipmentStatus != ShipmentStatus.AdminRejected && t.ShipmentStatus != ShipmentStatus.Pending && (t.Price != 0 || t.ShipmentStatus == ShipmentStatus.DriverRequested)).ToListAsync();
                 shipmentViewModels = _mapper.Map<List<ShipmentListViewModel>>(shipments);
                 return Ok(new Response { Code = "200", Data = shipmentViewModels, Msg = "Success", Status = "1" });
             }
@@ -236,7 +238,7 @@ namespace MandobX.API.Controllers
                     var trader = await _context.Traders.FirstOrDefaultAsync(t => t.UserId == shipmentOperationViewModel.TraderId);
                     var driver = await _context.Drivers.FirstOrDefaultAsync(d => d.UserId == shipmentOperationViewModel.DriverId);
                     shipmentOperationViewModel.TraderId = trader.Id;
-                    shipmentOperationViewModel.DriverId = driver?.Id ?? string.Empty;
+                    shipmentOperationViewModel.DriverId = driver == null ? null : driver.Id;
                     ShipmentOperation shipmentOperation = _mapper.Map<ShipmentOperation>(shipmentOperationViewModel);
                     shipmentOperation.GoogleMapId = googleMap.Id;
                     shipmentOperation.CreationDate = DateTime.Now.ToString();
@@ -336,6 +338,27 @@ namespace MandobX.API.Controllers
             {
                 return BadRequest(new Response { Code = "500", Data = null, Msg = string.Format("{0} and internal exception is {1}", e.Message, e.InnerException == null ? "nothing" : e.InnerException.Message), Status = "0" });
             }
+        }
+        /// <summary>
+        /// driver apply for a shipment
+        /// </summary>
+        /// <param name="shipmentId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost("requestshipment")]
+        public async Task<IActionResult> ApplyForShipment(string shipmentId, string userId)
+        {
+            var driver = await _context.Drivers.FirstOrDefaultAsync(d => d.UserId == userId);
+            var shipment = await _context.ShipmentOperations.FindAsync(shipmentId);
+            if (driver != null && shipment != null)
+            {
+                shipment.DriverId = driver.Id;
+                shipment.ShipmentStatus = ShipmentStatus.DriverRequested;
+                _context.ShipmentOperations.Update(shipment);
+                await _context.SaveChangesAsync();
+                return Ok(new Response { Code = "200", Data = null, Msg = "Apply for shipment was done successfuly", Status = "1" });
+            }
+            return NotFound();
         }
 
         private bool ShipmentOperationExists(string id)
