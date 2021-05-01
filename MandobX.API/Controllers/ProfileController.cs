@@ -52,6 +52,7 @@ namespace MandobX.API.Controllers
                 foreach (var uploadedFile in uploadedFiles)
                 {
                     uploadedFile.FilePath = "http://mori23-001-site1.dtempurl.com/images/" + uploadedFile.FilePath;
+                    uploadedFile.User = null;
                 }
                 if (driver != null)
                 {

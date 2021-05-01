@@ -189,7 +189,7 @@ namespace MandobX.API.Controllers
                     _context.Drivers.Update(driver);
                     if (formFiles == null)
                     {
-                        return Ok(new Response { Code = "200", Data = null, Msg = "Please upload one file at least", Status = "0" });
+                        return Ok(new Response { Code = "200", Data = new { vehicleId = storedVehicle.Id }, Msg = "Please upload one file at least", Status = "0" });
                     }
                     if (!Directory.Exists(_environment.ContentRootPath + "\\wwwroot\\Images\\"))
                     {
